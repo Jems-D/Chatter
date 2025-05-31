@@ -1,0 +1,9 @@
+namespace api.Constants
+{
+    public enum StoredProcedureConstants
+    {
+        SP_RegisterAccount,
+        SP_CheckIfUserExists,
+        SP_GenerateAndSaveRefreshToken,
+    }
+}

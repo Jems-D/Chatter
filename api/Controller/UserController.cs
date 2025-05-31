@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.DTO.Users;
+using api.Interface;
+using api.Mappers.Users;
+using api.Model.Entites;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controller
@@ -10,18 +16,92 @@ namespace api.Controller
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IUserRepository _repoUser;
 
-        public UserController()
+        public UserController(IUserRepository repoUser)
         {
-
+            _repoUser = repoUser;
         }
 
-        [HttpGet]
-        [Route("try")]
-        public async Task<IActionResult> Hello()
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> RegitserAccountEndpoint([FromBody] CreateUserDTO dto)
         {
-            return Ok("Good Evening");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var registeredUser = await _repoUser.RegisterAccountAsync(dto);
+
+            if (registeredUser == null)
+            {
+                return BadRequest("Username already exists");
+            }
+            return Ok("Accound Registered");
         }
 
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> LoginAccountEndpoint([FromBody] LoginUserDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = await _repoUser.LoginAccountAsync(dto);
+            if (user == null)
+                return BadRequest("Invalid credentials");
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(7),
+            };
+
+            Response.Cookies.Append("authToken", user.AccessToken, cookieOptions);
+
+            return Ok(user.ToUserResponseFromTokenResponse());
+        }
+
+        [HttpPost]
+        [Route("refresh")]
+        public async Task<IActionResult> RefreshTokenEndpoint([FromBody] Guid id)
+        {
+            var user = await _repoUser.RefreshTokenAsync(id);
+            if (user == null)
+            {
+                return null;
+            }
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true,
+                Expires = DateTime.UtcNow.AddDays(7),
+            };
+
+            Response.Cookies.Append("authToken", user.AccessToken, cookieOptions);
+
+            return Ok(user.ToUserResponseFromTokenResponse());
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        public IActionResult LogoutEndpoint()
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true,
+                Expires = DateTime.UtcNow.AddDays(-1),
+            };
+
+            Response.Cookies.Append("authToken", "", cookieOptions);
+            return Ok();
+        }
     }
 }
