@@ -17,11 +17,15 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/sign-n",
+    path: "/sign-in",
     element: <LoginPage />,
   },
   {
-    path: "/sign-out",
+    path: "/create-acc",
     element: <RegisterPage />,
+  },
+  {
+    path: "*",
+    element: null,
   },
 ]);

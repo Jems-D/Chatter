@@ -1,6 +1,7 @@
 import React from "react";
+import Yup from "yup";
 
-type Props = {};
+interface Props {}
 
 const LoginPage = (props: Props) => {
   return <div>LoginPage</div>;

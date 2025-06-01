@@ -66,7 +66,7 @@ namespace api.Data
             return result;
         }
 
-        public async Task<APIResult<User>> CheckIfUserExists(LoginUserDTO user)
+        public async Task<APIResult<User>?> CheckIfUserExists(LoginUserDTO user)
         {
             var result = new APIResult<User>
             {
@@ -98,11 +98,11 @@ namespace api.Data
                                 registeredUser.EmailAddress = reader.GetString(
                                     reader.GetOrdinal("email_add")
                                 );
-                                registeredUser.PasswordHash = reader.GetString(
-                                    reader.GetOrdinal("password_hash")
-                                );
                                 registeredUser.Role = reader.GetString(
                                     reader.GetOrdinal("user_role")
+                                );
+                                registeredUser.PasswordHash = reader.GetString(
+                                    reader.GetOrdinal("password_hash")
                                 );
                             }
 
@@ -151,6 +151,53 @@ namespace api.Data
                             if (await reader.ReadAsync())
                             {
                                 result.Payload = reader.GetInt32(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 400;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+            return result;
+        }
+
+        public async Task<APIResult<User?>> CheckIfRefreshTokenIsValid(Guid id)
+        {
+            var result = new APIResult<User?>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.CommandText =
+                        StoredProcedureConstants.SP_CheckIfRefreshTokenIsValid.ToString();
+                    command.Parameters.Add(new SqlParameter("@Id", id));
+
+                    await Database.OpenConnectionAsync();
+                    var user = new User();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                user.Id = reader.GetGuid(reader.GetOrdinal("user_id"));
+                                user.UserName = reader.GetString(reader.GetOrdinal("user_name"));
+                                user.EmailAddress = reader.GetString(
+                                    reader.GetOrdinal("email_add")
+                                );
+                                user.Role = reader.GetString(reader.GetOrdinal("user_role"));
                             }
                         }
                     }

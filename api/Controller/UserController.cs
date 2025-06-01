@@ -24,7 +24,7 @@ namespace api.Controller
         }
 
         [HttpPost]
-        [Route("register")]
+        [Route("auth/register")]
         public async Task<IActionResult> RegitserAccountEndpoint([FromBody] CreateUserDTO dto)
         {
             if (!ModelState.IsValid)
@@ -36,13 +36,13 @@ namespace api.Controller
 
             if (registeredUser == null)
             {
-                return BadRequest("Username already exists");
+                return BadRequest("Username or email already exists");
             }
             return Ok("Accound Registered");
         }
 
         [HttpPost]
-        [Route("login")]
+        [Route("auth/login")]
         public async Task<IActionResult> LoginAccountEndpoint([FromBody] LoginUserDTO dto)
         {
             if (!ModelState.IsValid)
@@ -67,7 +67,7 @@ namespace api.Controller
         }
 
         [HttpPost]
-        [Route("refresh")]
+        [Route("auth/refresh")]
         public async Task<IActionResult> RefreshTokenEndpoint([FromBody] Guid id)
         {
             var user = await _repoUser.RefreshTokenAsync(id);

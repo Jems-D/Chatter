@@ -11,7 +11,7 @@ namespace api.Model.Entites
         [Required]
         [MinLength(4, ErrorMessage = "Username too short")]
         [MaxLength(30, ErrorMessage = "Username too long")]
-        public string UserName { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(50, ErrorMessage = "Email address too long")]

@@ -16,7 +16,7 @@ namespace api.Mappers.Users
         {
             return new User
             {
-                UserName = dto.UserName,
+                UserName = dto.Username,
                 EmailAddress = dto.EmailAddress,
                 PasswordHash = hashedPassword,
                 Role = RoleConstants.User.ToString(),

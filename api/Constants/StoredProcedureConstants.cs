@@ -5,5 +5,6 @@ namespace api.Constants
         SP_RegisterAccount,
         SP_CheckIfUserExists,
         SP_GenerateAndSaveRefreshToken,
+        SP_CheckIfRefreshTokenIsValid,
     }
 }

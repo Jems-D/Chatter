@@ -130,12 +130,12 @@ namespace api.Repository
 
         private async Task<User?> ValidateRefreshTokenAsync(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null || user.RefreshTokenExpiryDate <= DateTime.UtcNow)
+            var user = await _context.CheckIfRefreshTokenIsValid(id);
+            if (!user.IsSuccess)
             {
                 return null;
             }
-            return user;
+            return user.Payload;
         }
 
         public async Task<TokenResponseDTO?> RefreshTokenAsync(Guid id)
