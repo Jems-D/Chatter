@@ -53,6 +53,13 @@ namespace api.Data
                                 result.Payload = reader.GetGuid(0);
                             }
                         }
+                        else
+                        {
+                            result.StatusCode = 204;
+                            result.Message =
+                                "The operation was successful but no records were returned";
+                            result.IsSuccess = false;
+                        }
                     }
                 }
             }
@@ -108,6 +115,13 @@ namespace api.Data
 
                             result.Payload = registeredUser;
                         }
+                        else
+                        {
+                            result.StatusCode = 204;
+                            result.Message =
+                                "The operation was successful but no records were returned";
+                            result.IsSuccess = false;
+                        }
                     }
                 }
             }
@@ -141,7 +155,7 @@ namespace api.Data
                     command.Parameters.Add(
                         new SqlParameter("@ExpiryDate", user.RefreshTokenExpiryDate)
                     );
-                    command.Parameters.Add(new SqlParameter("@Updated", user.UpdatedAt));
+                    command.Parameters.Add(new SqlParameter("@UpdatedAt", user.UpdatedAt));
 
                     await Database.OpenConnectionAsync();
                     using (var reader = await command.ExecuteReaderAsync())
@@ -152,6 +166,13 @@ namespace api.Data
                             {
                                 result.Payload = reader.GetInt32(0);
                             }
+                        }
+                        else
+                        {
+                            result.StatusCode = 204;
+                            result.Message =
+                                "The operation was successful but no records were returned";
+                            result.IsSuccess = false;
                         }
                     }
                 }
@@ -199,6 +220,13 @@ namespace api.Data
                                 );
                                 user.Role = reader.GetString(reader.GetOrdinal("user_role"));
                             }
+                        }
+                        else
+                        {
+                            result.StatusCode = 204;
+                            result.Message =
+                                "The operation was successful but no records were returned";
+                            result.IsSuccess = false;
                         }
                     }
                 }

@@ -1,19 +1,18 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { Button } from "../../Components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../../Components/ui/form";
-
 import { Input } from "../../Components/ui/input";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../Components/ui/card";
+import { Label } from "@radix-ui/react-label";
 
 interface Props {}
 
@@ -37,65 +36,74 @@ const validations = Yup.object({
 });
 
 const RegisterPage = ({}: Props) => {
-  const form = useForm<RegisterForm>({ resolver: yupResolver(validations) });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterForm>({ resolver: yupResolver(validations) });
 
   const onSubmit = () => {};
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="chatteruser_01" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="emailAddress"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email Address</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="chatteruser@email.com"
-                  {...field}
-                  type="email"
-                />
-              </FormControl>
-              <FormDescription>
-                This is the email address associated with your account.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormDescription>Password is a form of security</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </form>
-    </Form>
+    <div className="flex justify-between h-[100vh]">
+      <div className="flex-1">
+        <h1 className="self-center">Chatter</h1>
+      </div>
+      <div className="flex-1 items-center">
+        <Card className="w-full max-w-sm align-middle">
+          <CardHeader>
+            <CardTitle className="text-left">Create an account</CardTitle>
+            <CardDescription className="text-left">
+              Enter you username, email, and password to create your account
+            </CardDescription>
+            <CardAction>
+              <Button variant="link">Sign in</Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            <form>
+              <div className="flex flex-col gap-6">
+                <div className="grid gap-2">
+                  <Label htmlFor="username" className="text-left">
+                    Username
+                  </Label>
+                  <Input
+                    id="username"
+                    type="username"
+                    placeholder="Chatter_01"
+                    {...register("username")}
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="email" className="text-left">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="m@example.com"
+                    {...register("emailAddress")}
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <div className="flex items-center">
+                    <Label htmlFor="password">Preferred Password</Label>
+                  </div>
+                  <Input id="password" type="password" required />
+                </div>
+              </div>
+            </form>
+          </CardContent>
+          <CardFooter className="flex-col gap-2">
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </div>
   );
 };
 

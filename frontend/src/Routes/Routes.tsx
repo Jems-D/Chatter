@@ -7,11 +7,11 @@ import RegisterPage from "../Pages/Authentication/RegisterPage";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "",
     element: <App />,
     children: [
       {
-        path: "",
+        path: "/",
         element: <Dashboard />,
       },
     ],
