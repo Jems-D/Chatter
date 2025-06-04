@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { Button } from "../../Components/ui/button";
 import { Input } from "../../Components/ui/input";
+import "@fontsource/poppins/500.css";
 import {
   Card,
   CardAction,
@@ -13,6 +14,7 @@ import {
   CardTitle,
 } from "../../Components/ui/card";
 import { Label } from "@radix-ui/react-label";
+import { Link } from "react-router-dom";
 
 interface Props {}
 
@@ -42,14 +44,16 @@ const RegisterPage = ({}: Props) => {
     formState: { errors },
   } = useForm<RegisterForm>({ resolver: yupResolver(validations) });
 
-  const onSubmit = () => {};
+  const onSubmit = (form: RegisterForm) => {};
 
   return (
-    <div className="flex justify-between h-[100vh]">
-      <div className="flex-1">
-        <h1 className="self-center">Chatter</h1>
+    <div className="flex flex-col w-full h-[100vh] justify-center md:flex-row md:justify-between">
+      <div className="flex flex-1">
+        <h1 className="self-center text-5xl mb-10 font-poppins" id="chatter">
+          CHATTER
+        </h1>
       </div>
-      <div className="flex-1 items-center">
+      <div className="flex-1 flex items-center w-100">
         <Card className="w-full max-w-sm align-middle">
           <CardHeader>
             <CardTitle className="text-left">Create an account</CardTitle>
@@ -57,11 +61,13 @@ const RegisterPage = ({}: Props) => {
               Enter you username, email, and password to create your account
             </CardDescription>
             <CardAction>
-              <Button variant="link">Sign in</Button>
+              <Button variant="link">
+                <Link to="/sign-in">Sign in</Link>
+              </Button>
             </CardAction>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="username" className="text-left">
@@ -98,7 +104,7 @@ const RegisterPage = ({}: Props) => {
           </CardContent>
           <CardFooter className="flex-col gap-2">
             <Button type="submit" className="w-full">
-              Login
+              Register
             </Button>
           </CardFooter>
         </Card>

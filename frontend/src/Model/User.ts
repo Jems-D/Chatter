@@ -1,6 +1,19 @@
 export interface UserResponse {
-  Id: string;
-  Username: string;
-  Role: string;
-  EmailAddress: string;
+  id: string;
+  username: string;
+  role: string;
+  emailAddress: string;
+}
+
+export interface UserContextType {
+  user: UserResponse | null;
+  registerUser: (
+    username: string,
+    emailAddress: string,
+    password: string
+  ) => void;
+  loginUser: (emailAddress: string, password: string) => void;
+  refreshToken: (id: string) => void;
+  logoutUser: () => void;
+  isAuthenticated: () => boolean;
 }

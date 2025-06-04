@@ -1,11 +1,24 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@custom-variant dark (&:where(.dark, .dark *));
 
-@custom-variant dark (&:is(.dark *));
+@theme {
+  --color_applewhite: #f5f5f7;
+  --color_appledark: #1c1c1e;
+  --color_text_white_i: #1a1a1a;
+  --color_text_white_ii: #4a4a4a;
+  --color_text_white_iii: #a0a0a0;
+  --color_text_dark_i: #f5f5f7;
+  --color_text_dark_ii: #e4e4e7;
+  --color_text_dark_iii: #ffffff;
+}
+body {
+  @apply bg-[var(--color_applewhite)] dark:bg-[var(--color_appledark)];
+  @apply text-[vaar(--color_text_white_i)] dark:text-[var(--color_text_dark_i)];
+}
 
-* {
-  background-color: #f5f5f7;
-  color: #1a1a1a;
+#chatter {
+  font-family: "Poppins", sans-serif;
 }
 
 @theme inline {

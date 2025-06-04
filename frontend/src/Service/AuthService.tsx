@@ -65,3 +65,14 @@ export const RecreateRefreshTokenAsync = async (id: string) => {
     handleError(err);
   }
 };
+
+export const LogoutUserAsync = async () => {
+  try {
+    const result = await axios.post<void>(`${authUrl}/logout`, null, {
+      withCredentials: true,
+    });
+    return result;
+  } catch (err: any) {
+    handleError(err);
+  }
+};
