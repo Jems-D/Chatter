@@ -4,12 +4,16 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { Outlet } from "react-router-dom";
 import { UserProvider } from "./Context/useAuth";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <>
-      <div className="text-3xl">HELLOOOOO</div>
-      <Outlet />
+      <UserProvider>
+        <div className="text-3xl dark:bg-[var(--bg_color_dark_i)]">CHATTER</div>
+        <Outlet />
+        <ToastContainer />
+      </UserProvider>
     </>
   );
 }

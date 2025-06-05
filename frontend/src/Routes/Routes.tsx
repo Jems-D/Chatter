@@ -4,6 +4,7 @@ import App from "../App";
 import Dashboard from "../Pages/Shared/Dashboard";
 import LoginPage from "../Pages/Authentication/LoginPage";
 import RegisterPage from "../Pages/Authentication/RegisterPage";
+import { UserProvider } from "../Context/useAuth";
 
 export const router = createBrowserRouter([
   {
@@ -18,11 +19,19 @@ export const router = createBrowserRouter([
   },
   {
     path: "/sign-in",
-    element: <LoginPage />,
+    element: (
+      <UserProvider>
+        <LoginPage />
+      </UserProvider>
+    ),
   },
   {
     path: "/create-acc",
-    element: <RegisterPage />,
+    element: (
+      <UserProvider>
+        <RegisterPage />
+      </UserProvider>
+    ),
   },
   {
     path: "*",

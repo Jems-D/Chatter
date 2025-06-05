@@ -14,7 +14,8 @@ import {
   CardTitle,
 } from "../../Components/ui/card";
 import { Label } from "@radix-ui/react-label";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useAuth } from "../../Context/useAuth";
 
 interface Props {}
 
@@ -38,13 +39,21 @@ const validations = Yup.object({
 });
 
 const RegisterPage = ({}: Props) => {
+  const { registerUser, isAuthenticated } = useAuth();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterForm>({ resolver: yupResolver(validations) });
 
-  const onSubmit = (form: RegisterForm) => {};
+  const onSubmit = (form: RegisterForm) => {
+    registerUser(form.username, form.emailAddress, form.password);
+  };
+
+  if (isAuthenticated()) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="flex flex-col w-full h-[100vh] justify-center md:flex-row md:justify-between">
@@ -78,8 +87,12 @@ const RegisterPage = ({}: Props) => {
                     type="username"
                     placeholder="Chatter_01"
                     {...register("username")}
-                    required
                   />
+                  {errors?.username?.message && (
+                    <span className="text-xs text-red-600 text-right dark:text-red-400">
+                      {errors.username.message}
+                    </span>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email" className="text-left">
@@ -90,23 +103,34 @@ const RegisterPage = ({}: Props) => {
                     type="email"
                     placeholder="m@example.com"
                     {...register("emailAddress")}
-                    required
                   />
+                  {errors?.emailAddress?.message && (
+                    <span className="text-xs text-red-600 text-right dark:text-red-400">
+                      {errors.emailAddress.message}
+                    </span>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
                     <Label htmlFor="password">Preferred Password</Label>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input id="password" type="password" />
+                  {errors?.password?.message && (
+                    <span className="text-xs text-red-600 text-right dark:text-red-400">
+                      {errors.password.message}
+                    </span>
+                  )}
                 </div>
+              </div>
+              <div>
+                <CardFooter className="flex-col flex-1 gap-2 px-0 pt-6">
+                  <Button type="submit" className="w-full">
+                    Register
+                  </Button>
+                </CardFooter>
               </div>
             </form>
           </CardContent>
-          <CardFooter className="flex-col gap-2">
-            <Button type="submit" className="w-full">
-              Register
-            </Button>
-          </CardFooter>
         </Card>
       </div>
     </div>

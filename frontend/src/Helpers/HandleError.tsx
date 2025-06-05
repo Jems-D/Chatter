@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 import { object } from "yup";
 
 export const handleError = (error: Error) => {
@@ -6,16 +7,16 @@ export const handleError = (error: Error) => {
     var err = error.response;
     if (Array.isArray(err?.data.error)) {
       for (let val of err?.data.error) {
-        console.log(val);
+        toast.error(val);
       }
     } else if (typeof err?.data.error === "object") {
       for (let e in err.data.error) {
-        console.log(e);
+        toast.error(e);
       }
     } else if (err?.data) {
-      console.log(err?.data);
+      toast.error(err?.data);
     } else if (err) {
-      console.log(err?.data);
+      toast.error(err?.data);
     }
   }
 };

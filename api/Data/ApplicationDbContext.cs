@@ -19,7 +19,9 @@ namespace api.Data
             : base(dbContextOptions) { }
 
         public DbSet<User> Users;
+        public DbSet<Chat> Chats;
 
+        #region  Authentication
         public async Task<APIResult<Guid?>> RegisterAccount(User user)
         {
             var result = new APIResult<Guid?>
@@ -239,5 +241,71 @@ namespace api.Data
             }
             return result;
         }
+
+        #endregion
+
+        #region Chats
+
+        public async Task<APIResult<List<Chat?>>> GetAllChatsAsync()
+        {
+            var result = new APIResult<List<Chat?>>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_GetAllChats.ToString();
+
+                    var chats = new List<Chat?>();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var chat = new Chat
+                                {
+                                    id = reader.GetInt32(reader.GetOrdinal("id")),
+                                    ChatTitle = reader.GetString(reader.GetOrdinal("chat_title")),
+                                    ChatContent = reader.GetString(
+                                        reader.GetOrdinal("chat_content")
+                                    ),
+                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("created_at")),
+                                    CreatedBy = reader.GetString(
+                                        reader.GetOrdinal("created_by_name")
+                                    ),
+                                };
+
+                                chats.Add(chat);
+                            }
+
+                            result.Payload = chats;
+                        }
+                        else
+                        {
+                            result.StatusCode = 204;
+                            result.Message = "No result";
+                            result.IsSuccess = false;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 400;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+            return result;
+        }
+
+        #endregion
     }
 }

@@ -6,5 +6,6 @@ namespace api.Constants
         SP_CheckIfUserExists,
         SP_GenerateAndSaveRefreshToken,
         SP_CheckIfRefreshTokenIsValid,
+        SP_GetAllChats,
     }
 }

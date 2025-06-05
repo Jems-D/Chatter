@@ -2,6 +2,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
+import { useAuth } from "../../Context/useAuth";
+import type { LoginForm } from "../../Model/Forms";
 import {
   Card,
   CardAction,
@@ -12,17 +14,11 @@ import {
   CardTitle,
 } from "../../Components/ui/card";
 import { Button } from "../../Components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../../Components/ui/input";
-import { useAuth } from "../../Context/useAuth";
 
 interface Props {}
-
-type LoginForm = {
-  emailAddress: string;
-  password: string;
-};
 
 const validations = Yup.object({
   emailAddress: Yup.string()
@@ -34,8 +30,7 @@ const validations = Yup.object({
 });
 
 const LoginPage = ({}: Props) => {
-  const navigate = useNavigate();
-  const { loginUser } = useAuth();
+  const { loginUser, isAuthenticated } = useAuth();
 
   const {
     register,
@@ -45,8 +40,11 @@ const LoginPage = ({}: Props) => {
 
   const onSubmit = (form: LoginForm) => {
     loginUser(form.emailAddress, form.password);
-    navigate("/");
   };
+
+  if (isAuthenticated()) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="flex flex-col w-full h-[100vh] justify-center md:flex-row md:justify-between">
@@ -82,8 +80,10 @@ const LoginPage = ({}: Props) => {
                     {...register("emailAddress")}
                     required
                   />
-                  {errors.emailAddress?.message ?? (
-                    <p>{errors.emailAddress?.message}</p>
+                  {errors.emailAddress?.message && (
+                    <span className="text-xs text-red-600 text-right dark:text-red-400">
+                      {errors.emailAddress.message}
+                    </span>
                   )}
                 </div>
                 <div className="grid gap-2">
@@ -97,11 +97,13 @@ const LoginPage = ({}: Props) => {
                     {...register("password")}
                   />
                   {errors.password?.message && (
-                    <p>{errors.password?.message}</p>
+                    <span className="text-xs text-red-600 text-right dark:text-red-400">
+                      {errors.password?.message}
+                    </span>
                   )}
                 </div>
               </div>
-              <CardFooter className="flex-col gap-2">
+              <CardFooter className="flex-col flex-1 gap-2 px-0 pt-6">
                 <Button type="submit" className="w-full">
                   Log in
                 </Button>

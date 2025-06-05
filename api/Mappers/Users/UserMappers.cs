@@ -12,6 +12,12 @@ namespace api.Mappers.Users
 {
     public static class UserMappers
     {
+        /// <summary>
+        /// Transforms the createUserDto to user for inserting data
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="hashedPassword"></param>
+        /// <returns></returns>
         public static User ToUserFromCreateUserDto(this CreateUserDTO dto, string hashedPassword)
         {
             return new User
@@ -25,6 +31,11 @@ namespace api.Mappers.Users
             };
         }
 
+        /// <summary>
+        /// Transforms the TokenResponseDTO to UserResponseDTO
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public static UserResponseDTO ToUserResponseFromTokenResponse(this TokenResponseDTO dto)
         {
             return new UserResponseDTO

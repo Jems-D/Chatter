@@ -9,6 +9,7 @@ import {
 } from "../Service/AuthService";
 import React from "react";
 import { createContext } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ interface Props {
 const UserContext = createContext<UserContextType>({} as UserContextType);
 
 export const UserProvider = ({ children }: Props) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -46,6 +48,8 @@ export const UserProvider = ({ children }: Props) => {
       .then((res) => {
         if (res) {
           if (res.status === 200) {
+            toast.success("Account Created");
+            navigate("/sign-in");
           }
         }
       })
@@ -67,6 +71,8 @@ export const UserProvider = ({ children }: Props) => {
 
             localStorage.setItem("user", JSON.stringify(userData));
             setUser(userData);
+            toast.success("Logged in successfully");
+            navigate("/");
           }
         }
       })
@@ -95,6 +101,8 @@ export const UserProvider = ({ children }: Props) => {
           setUser(null);
           localStorage.setItem("isAuthenticated", JSON.stringify(false));
           localStorage.removeItem("user");
+          toast.success("Logged out successfully");
+          navigate("/sign-in");
         }
       }
     });
