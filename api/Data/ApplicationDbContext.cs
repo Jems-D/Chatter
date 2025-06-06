@@ -263,7 +263,7 @@ namespace api.Data
                     command.CommandText = StoredProcedureConstants.SP_GetAllChats.ToString();
 
                     var chats = new List<Chat?>();
-
+                    await Database.OpenConnectionAsync();
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         if (reader.HasRows)
@@ -272,7 +272,7 @@ namespace api.Data
                             {
                                 var chat = new Chat
                                 {
-                                    id = reader.GetInt32(reader.GetOrdinal("id")),
+                                    id = reader.GetInt32(reader.GetOrdinal("chat_id")),
                                     ChatTitle = reader.GetString(reader.GetOrdinal("chat_title")),
                                     ChatContent = reader.GetString(
                                         reader.GetOrdinal("chat_content")

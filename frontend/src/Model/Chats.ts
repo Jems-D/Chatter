@@ -1,8 +1,7 @@
 export interface Chats {
   id: string;
-  ChatTitle: string;
-  ChatContent: string;
-  CreatedAt: string;
-  CreatedBy: string;
-  isDisabled: boolean;
+  chatTitle: string;
+  chatContent: string;
+  createdAt: string;
+  createdBy: string;
 }

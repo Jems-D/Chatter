@@ -10,6 +10,8 @@ namespace api.Model
 {
     public class Chat
     {
+        [Key]
+        [Column("chat_id")]
         public int id { get; set; }
 
         [Required]
@@ -28,10 +30,13 @@ namespace api.Model
         [Column("created_by_name")]
         public string? CreatedBy { get; set; } = string.Empty;
 
-        [Column("created_by_id")]
+        [Column("user_id")]
         public Guid CreatedById { get; set; }
 
         [Column("is_disabled")]
         public bool isDisabled { get; set; } = false;
+
+        public List<Comment> Comments { get; set; } = new List<Comment>();
+        public Reaction Reaction { get; set; } = new Reaction();
     }
 }

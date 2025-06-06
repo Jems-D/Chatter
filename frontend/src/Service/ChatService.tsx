@@ -6,7 +6,7 @@ const chatUrl = import.meta.env.VITE_APP_CHAT_URL;
 
 export const GetAllChatsAsync = async () => {
   try {
-    const result = await axios.get<Chats>(`${chatUrl}`, {
+    const result = await axios.get<Chats[]>(`${chatUrl}`, {
       withCredentials: true,
     });
 

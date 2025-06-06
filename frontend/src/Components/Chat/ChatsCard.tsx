@@ -1,0 +1,39 @@
+import React, { lazy, Suspense } from "react";
+import type { Chats } from "../../Model/Chats";
+import ChatSkeleton from "./ChatSkeleton";
+
+interface Props {
+  chats: Chats[] | undefined;
+}
+
+const ChatItem = lazy(() => import("../Chat/ChatItem"));
+
+const ChatsCard = ({ chats }: Props) => {
+  console.log("Chats: ", chats);
+
+  if (typeof chats === "undefined") {
+    return null;
+  }
+
+  return (
+    <ul
+      className="list-none columns-1 md:columns-2  lg:columns-3 xl:columns-4"
+      id="card"
+    >
+      {chats.map((chat, index) => {
+        return (
+          <li
+            className="break-inside-avoid w-[250px] md:w[300px]"
+            key={`chats-${index}`}
+          >
+            <Suspense fallback={<ChatSkeleton />}>
+              <ChatItem chat={chat} />
+            </Suspense>
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
+export default ChatsCard;

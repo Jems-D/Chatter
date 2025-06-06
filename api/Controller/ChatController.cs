@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Interface;
 using api.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controller
 {
     [ApiController]
-    [Authorize(Roles = "User, Moderator, Admin")]
+    [Authorize(Roles = "User")]
     public class ChatController : ControllerBase
     {
-        private readonly ChatRepository _repoChat;
+        private readonly IChatRepository _repoChat;
 
-        public ChatController(ChatRepository repoChat)
+        public ChatController(IChatRepository repoChat)
         {
             _repoChat = repoChat;
         }

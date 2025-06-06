@@ -92,7 +92,7 @@ namespace api.Repository
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_config.GetValue<string>("JWT:SigningKey")!)
             );
-            var creds = new SigningCredentials(key, SecurityAlgorithms.Aes256CbcHmacSha512);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
             var tokenDescriptor = new JwtSecurityToken(
                 issuer: _config["JWT:Issuer"],
