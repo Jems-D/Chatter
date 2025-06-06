@@ -15,7 +15,7 @@ interface Props {
 function ChatItem({ chat }: Props) {
   console.log("dito", chat);
   return (
-    <Card className="bg-[var(--bg_color_dark)] text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)] dark:bg-[var(--bg_color_white)] w-[300px] h-auto flex-col gap-2">
+    <Card className="bg-[var(--color_applewhite)] text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)] dark:bg-[var(--color_appledark)] w-[300px] h-auto flex-col gap-2">
       <CardHeader className="flex-col gap-2">
         <div className="flex gap-1">
           <Avatar className="rounded-[100px] w-[24px] h-[24px]">

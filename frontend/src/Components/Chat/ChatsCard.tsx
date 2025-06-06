@@ -12,7 +12,7 @@ const ChatsCard = ({ chats }: Props) => {
   console.log("Chats: ", chats);
 
   if (typeof chats === "undefined") {
-    return null;
+    return <h3>No chats fetched</h3>;
   }
 
   return (

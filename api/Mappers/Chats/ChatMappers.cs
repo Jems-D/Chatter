@@ -25,5 +25,16 @@ namespace api.Mappers.Chats
                 CreatedBy = chat.CreatedBy,
             };
         }
+
+        public static Chat ToChatFromCreate(this CreateChatDTO dto, String username, Guid userId)
+        {
+            return new Chat
+            {
+                ChatTitle = dto.ChatTitle,
+                ChatContent = dto.ChatContent,
+                CreatedBy = username,
+                CreatedById = userId,
+            };
+        }
     }
 }

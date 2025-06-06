@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Constants;
+using api.DTO.Chats;
 using api.DTO.SPs;
 using api.DTO.Users;
 using api.Model;
@@ -287,6 +289,71 @@ namespace api.Data
                             }
 
                             result.Payload = chats;
+                        }
+                        else
+                        {
+                            result.StatusCode = 204;
+                            result.Message = "No result";
+                            result.IsSuccess = false;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 400;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+            return result;
+        }
+
+        public async Task<APIResult<Chat?>> InsertChatAsync(Chat chat)
+        {
+            var result = new APIResult<Chat?>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_InsertChat.ToString();
+                    command.Parameters.Add(new SqlParameter("@ChatTitle", chat.ChatTitle));
+                    command.Parameters.Add(new SqlParameter("@ChatContent", chat.ChatContent));
+                    command.Parameters.Add(new SqlParameter("@CreatedBy", chat.CreatedBy));
+                    command.Parameters.Add(new SqlParameter("@UserId", chat.CreatedById));
+                    command.Parameters.Add(new SqlParameter("@CreatedAt", chat.CreatedAt));
+                    command.Parameters.Add(new SqlParameter("@UpdatedAt", chat.UpdatedAt));
+
+                    var insertedChat = new Chat();
+                    await Database.OpenConnectionAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                insertedChat.id = reader.GetInt32(reader.GetOrdinal("chat_id"));
+                                insertedChat.ChatTitle = reader.GetString(
+                                    reader.GetOrdinal("chat_title")
+                                );
+                                insertedChat.ChatTitle = reader.GetString(
+                                    reader.GetOrdinal("chat_content")
+                                );
+                                insertedChat.CreatedBy = reader.GetString(
+                                    reader.GetOrdinal("created_by_name")
+                                );
+                                insertedChat.CreatedAt = reader.GetDateTime(
+                                    reader.GetOrdinal("created_at")
+                                );
+                            }
+
+                            result.Payload = insertedChat;
                         }
                         else
                         {

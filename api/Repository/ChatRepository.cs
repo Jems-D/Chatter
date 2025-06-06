@@ -6,6 +6,7 @@ using api.Data;
 using api.DTO.Chats;
 using api.Interface;
 using api.Mappers.Chats;
+using api.Model;
 
 namespace api.Repository
 {
@@ -16,6 +17,16 @@ namespace api.Repository
         public ChatRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<ChatDTO?> CreateChat(Chat chat)
+        {
+            var insertedChat = await _context.InsertChatAsync(chat);
+            if (!insertedChat.IsSuccess)
+            {
+                return null;
+            }
+            return insertedChat.Payload.ToChatDTOFromChat();
         }
 
         public async Task<List<ChatDTO?>> GetAllChats()
