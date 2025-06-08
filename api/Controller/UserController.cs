@@ -36,9 +36,9 @@ namespace api.Controller
 
             if (registeredUser == null)
             {
-                return BadRequest("Username or email already exists");
+                return Conflict("Username or email already exists");
             }
-            return Ok("Accound Registered");
+            return Created();
         }
 
         [HttpPost]
@@ -67,13 +67,13 @@ namespace api.Controller
         }
 
         [HttpPost]
-        [Route("auth/refresh")]
+        [Route("auth/refresh-token")]
         public async Task<IActionResult> RefreshTokenEndpoint([FromBody] Guid id)
         {
             var user = await _repoUser.RefreshTokenAsync(id);
             if (user == null)
             {
-                return null;
+                return Unauthorized("User id does not exist");
             }
             var cookieOptions = new CookieOptions
             {
@@ -89,7 +89,7 @@ namespace api.Controller
         }
 
         [HttpPost]
-        [Route("logout")]
+        [Route("auth/logout")]
         public IActionResult LogoutEndpoint()
         {
             var cookieOptions = new CookieOptions

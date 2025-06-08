@@ -5,6 +5,11 @@ import Dashboard from "../Pages/Shared/Dashboard";
 import LoginPage from "../Pages/Authentication/LoginPage";
 import RegisterPage from "../Pages/Authentication/RegisterPage";
 import { UserProvider } from "../Context/useAuth";
+import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import ProtectedRoutes from "../Routes/ProtectedRoutes";
+import UnauthorizePage from "../Pages/ErrorPage/UnauthorizePage";
+import Forbidden from "../Pages/ErrorPage/Forbidden";
+import { ToastContainer } from "react-toastify";
 
 export const router = createBrowserRouter([
   {
@@ -13,7 +18,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoutes allowedRoles={["User"]}>
+            <Dashboard />
+          </ProtectedRoutes>
+        ),
       },
     ],
   },
@@ -22,6 +31,7 @@ export const router = createBrowserRouter([
     element: (
       <UserProvider>
         <LoginPage />
+        <ToastContainer />
       </UserProvider>
     ),
   },
@@ -30,11 +40,20 @@ export const router = createBrowserRouter([
     element: (
       <UserProvider>
         <RegisterPage />
+        <ToastContainer />
       </UserProvider>
     ),
   },
   {
+    path: "/unauthorize",
+    element: <UnauthorizePage />,
+  },
+  {
+    path: "/forbidden",
+    element: <Forbidden />,
+  },
+  {
     path: "*",
-    element: null,
+    element: <ErrorPage />,
   },
 ]);

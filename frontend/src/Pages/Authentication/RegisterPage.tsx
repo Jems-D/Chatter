@@ -114,7 +114,11 @@ const RegisterPage = ({}: Props) => {
                   <div className="flex items-center">
                     <Label htmlFor="password">Preferred Password</Label>
                   </div>
-                  <Input id="password" type="password" />
+                  <Input
+                    id="password"
+                    type="password"
+                    {...register("password")}
+                  />
                   {errors?.password?.message && (
                     <span className="text-xs text-red-600 text-right dark:text-red-400">
                       {errors.password.message}

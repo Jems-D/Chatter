@@ -17,6 +17,10 @@ body {
   @apply text-[vaar(--color_text_white_i)] dark:text-[var(--color_text_dark_i)];
 }
 
+.Toastify_close-button {
+  color: #1c1c1e !important;
+}
+
 #chatter {
   font-family: "Poppins", sans-serif;
 }

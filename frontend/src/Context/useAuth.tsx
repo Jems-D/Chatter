@@ -9,7 +9,7 @@ import {
 } from "../Service/AuthService";
 import React from "react";
 import { createContext } from "react";
-import { toast } from "react-toastify";
+import { Bounce, toast } from "react-toastify";
 
 interface Props {
   children: React.ReactNode;
@@ -21,7 +21,7 @@ export const UserProvider = ({ children }: Props) => {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserResponse | null>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
-
+  const isDarkMode = document.documentElement.classList.contains("dark");
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const isAuthenticated = localStorage.getItem("isAuthenticated");
@@ -48,7 +48,17 @@ export const UserProvider = ({ children }: Props) => {
       .then((res) => {
         if (res) {
           if (res.status === 200) {
-            toast.success("Account Created");
+            toast.success("Account Created", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: true,
+              pauseOnHover: true,
+              draggable: false,
+              progress: undefined,
+              theme: isDarkMode ? "dark" : "colored",
+              transition: Bounce,
+              closeButton: true,
+            });
             navigate("/sign-in");
           }
         }
@@ -71,7 +81,17 @@ export const UserProvider = ({ children }: Props) => {
 
             localStorage.setItem("user", JSON.stringify(userData));
             setUser(userData);
-            toast.success("Logged in successfully");
+            toast.success("Logged in successfully", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: true,
+              pauseOnHover: true,
+              draggable: false,
+              progress: undefined,
+              theme: isDarkMode ? "dark" : "colored",
+              transition: Bounce,
+              closeButton: true,
+            });
             navigate("/");
           }
         }
@@ -101,7 +121,17 @@ export const UserProvider = ({ children }: Props) => {
           setUser(null);
           localStorage.setItem("isAuthenticated", JSON.stringify(false));
           localStorage.removeItem("user");
-          toast.success("Logged out successfully");
+          toast.success("Logged out successfully", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+            theme: isDarkMode ? "dark" : "colored",
+            transition: Bounce,
+            closeButton: true,
+          });
           navigate("/sign-in");
         }
       }
