@@ -73,7 +73,7 @@ namespace api.Controller
             var user = await _repoUser.RefreshTokenAsync(id);
             if (user == null)
             {
-                return Unauthorized("User id does not exist");
+                return Unauthorized("Session expired");
             }
             var cookieOptions = new CookieOptions
             {

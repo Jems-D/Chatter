@@ -8,6 +8,7 @@ using api.Interface;
 using api.Mappers.Chats;
 using api.Repository;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controller
@@ -29,12 +30,12 @@ namespace api.Controller
         {
             var chats = await _repoChat.GetAllChats();
             if (chats == null)
-                return BadRequest("There are currently no chats available");
+                return Ok("There are currently no chats available");
             return Ok(chats);
         }
 
         [HttpPost]
-        [Route("chats/create")]
+        [Route("chats")]
         public async Task<IActionResult> CreateChat(CreateChatDTO dto)
         {
             if (!ModelState.IsValid)
@@ -52,7 +53,7 @@ namespace api.Controller
             var insertedChat = await _repoChat.CreateChat(chat);
             if (insertedChat == null)
             {
-                return BadRequest("Insert operation unsuccessful");
+                return StatusCode(500, "Something went wrong");
             }
             return Ok(insertedChat);
         }

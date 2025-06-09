@@ -8,3 +8,8 @@ export interface RegisterForm {
   emailAddress: string;
   password: string;
 }
+
+export interface ChatForm {
+  chatTitle: string;
+  chatContent: string;
+}

@@ -15,3 +15,24 @@ export const GetAllChatsAsync = async () => {
     handleError(err);
   }
 };
+
+export const CreateChatAsync = async (
+  chatTitle: string,
+  chatContent: string
+) => {
+  try {
+    const result = await axios.post(
+      `${chatUrl}`,
+      {
+        chatTitle: chatTitle,
+        chatContent: chatContent,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    return result;
+  } catch (error: any) {
+    handleError(error);
+  }
+};

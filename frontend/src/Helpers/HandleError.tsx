@@ -6,9 +6,9 @@ export const handleError = (error: Error) => {
 
   if (axios.isAxiosError(error)) {
     var err = error.response;
-    if (Array.isArray(err?.data.error)) {
-      for (let val of err?.data.error) {
-        toast.error(val, {
+    if (Array.isArray(err?.data.errors)) {
+      for (let val of err?.data.errors) {
+        toast.warning(val, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -20,9 +20,9 @@ export const handleError = (error: Error) => {
           closeButton: true,
         });
       }
-    } else if (typeof err?.data.error === "object") {
-      for (let e in err.data.error) {
-        toast.error(e, {
+    } else if (typeof err?.data.errors === "object") {
+      for (let e in err.data.errors) {
+        toast.warning(err?.data.errors[e][0], {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
