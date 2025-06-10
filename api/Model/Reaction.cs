@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace api.Model
 {
+    [Table("ChatReactions")]
     public class Reaction
     {
         [Key]
@@ -23,6 +24,6 @@ namespace api.Model
         public int EmojiId { get; set; }
 
         [Column("created_at")]
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

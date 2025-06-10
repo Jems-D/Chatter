@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace api.Model
 {
+    [Table("Comments")]
     public class Comment
     {
         [Key]

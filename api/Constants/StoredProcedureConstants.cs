@@ -8,5 +8,7 @@ namespace api.Constants
         SP_CheckIfRefreshTokenIsValid,
         SP_GetAllChats,
         SP_InsertChat,
+        SP_GetAllEmojis,
+        SP_InsertReaction,
     }
 }

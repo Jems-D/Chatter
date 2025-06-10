@@ -3,6 +3,7 @@ using System.Text;
 using api;
 using api.Data;
 using api.Interface;
+using api.Model;
 using api.Repository;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
@@ -91,6 +92,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<IEmojiRepository, EmojiRepository>();
+builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
 
 var app = builder.Build();
 

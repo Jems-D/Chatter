@@ -8,6 +8,7 @@ using api.DTO.Chats;
 using api.DTO.SPs;
 using api.DTO.Users;
 using api.Model;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -373,6 +374,109 @@ namespace api.Data
                 result.Message = ex.Message;
                 result.IsSuccess = false;
             }
+            return result;
+        }
+
+        #endregion
+
+
+        #region  Emojis
+
+        public async Task<APIResult<List<Emoji>>> GetAllEmojisAsync()
+        {
+            var result = new APIResult<List<Emoji>>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_GetAllEmojis.ToString();
+
+                    var emojis = new List<Emoji>();
+                    await Database.OpenConnectionAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var emoji = new Emoji
+                                {
+                                    EmojiId = reader.GetInt32(reader.GetOrdinal("emoji_id")),
+                                    EmojiSymbol = reader.GetString(
+                                        reader.GetOrdinal("emoji_symbol")
+                                    ),
+                                    EmojiText = reader.GetString(reader.GetOrdinal("emoji_text")),
+                                };
+
+                                emojis.Add(emoji);
+                            }
+
+                            result.Payload = emojis;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+            return result;
+        }
+
+        #endregion
+
+
+        #region  Reactions
+
+        //FIx the payload
+        public async Task<APIResult<int?>> InsertReactionAsync(Reaction reaction)
+        {
+            var result = new APIResult<int?>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_InsertReaction.ToString();
+                    command.Parameters.Add(new SqlParameter("@ChatId", reaction.ChatId));
+                    command.Parameters.Add(new SqlParameter("@UserId", reaction.UserId));
+                    command.Parameters.Add(new SqlParameter("@EmojiId", reaction.EmojiId));
+                    command.Parameters.Add(new SqlParameter("@CreatedAt", reaction.CreatedAt));
+
+                    await Database.OpenConnectionAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                result.Payload = reader.GetInt32(reader.GetOrdinal("Return Value"));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+
             return result;
         }
 

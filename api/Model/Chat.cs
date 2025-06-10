@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace api.Model
 {
+    [Table("Chats")]
     public class Chat
     {
         [Key]
