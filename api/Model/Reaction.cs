@@ -19,8 +19,8 @@ namespace api.Model
         [Column("user_id")]
         public Guid UserId { get; set; }
 
-        [Column("reaction_type")]
-        public string? ReactionType { get; set; }
+        [Column("emoji_id")]
+        public int EmojiId { get; set; }
 
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }

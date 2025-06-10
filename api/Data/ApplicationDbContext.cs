@@ -22,6 +22,9 @@ namespace api.Data
 
         public DbSet<User> Users;
         public DbSet<Chat> Chats;
+        public DbSet<Emoji> Emojis;
+        public DbSet<Reaction> Reactions;
+        public DbSet<Comment> Comments;
 
         #region  Authentication
         public async Task<APIResult<Guid?>> RegisterAccount(User user)

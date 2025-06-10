@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { createContext } from "react";
 import { Bounce, toast } from "react-toastify";
+import axios from "axios";
 
 interface Props {
   children: React.ReactNode;
@@ -47,7 +48,7 @@ export const UserProvider = ({ children }: Props) => {
     await RegisterAccountAsync(username, emailAddress, password)
       .then((res) => {
         if (res) {
-          if (res.status === 200) {
+          if (res.status === 201) {
             toast.success("Account Created", {
               position: "top-right",
               autoClose: 5000,
@@ -96,7 +97,7 @@ export const UserProvider = ({ children }: Props) => {
           }
         }
       })
-      .catch((ex) => console.log(ex.Message));
+      .catch((error) => console.log("Something's wrong"));
   };
 
   const refreshToken = async (id: string) => {

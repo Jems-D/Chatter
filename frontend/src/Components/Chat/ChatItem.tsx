@@ -32,7 +32,7 @@ function ChatItem({ chat }: Props) {
           <h3 className="text-xl font-bold text-left">{chat.chatTitle}</h3>
         </div>
       </CardHeader>
-      <CardContent className="text-left text-pretty">
+      <CardContent className="text-left text-pretty break-all">
         {chat.chatContent}
       </CardContent>
       <CardFooter></CardFooter>

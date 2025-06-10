@@ -7,13 +7,18 @@ using api.Extensions;
 using api.Interface;
 using api.Mappers.Chats;
 using api.Repository;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace api.Controller
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [ApiController]
+    [Route("v{version:apiVersion}/chats")]
     [Authorize(Roles = "User")]
     public class ChatController : ControllerBase
     {
@@ -25,7 +30,7 @@ namespace api.Controller
         }
 
         [HttpGet]
-        [Route("chats")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllChatsEndpoint()
         {
             var chats = await _repoChat.GetAllChats();
@@ -34,8 +39,18 @@ namespace api.Controller
             return Ok(chats);
         }
 
+        [HttpGet]
+        [MapToApiVersion("2.0")]
+        public async Task<IActionResult> GetAllChatsEndpointV2()
+        {
+            var chats = await _repoChat.GetAllChats();
+            if (chats == null)
+                return Ok("There are currently no chats available");
+            return Ok(chats);
+        }
+
         [HttpPost]
-        [Route("chats")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> CreateChat(CreateChatDTO dto)
         {
             if (!ModelState.IsValid)

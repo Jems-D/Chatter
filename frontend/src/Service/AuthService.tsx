@@ -52,7 +52,7 @@ export const LoginAccountAsync = async (
 export const RecreateRefreshTokenAsync = async (id: string) => {
   try {
     const result = await axios.post<UserResponse>(
-      `${authUrl}/refresh`,
+      `${authUrl}/refresh-token`,
       {
         id: id,
       },

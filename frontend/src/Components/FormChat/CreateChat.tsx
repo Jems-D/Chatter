@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -32,9 +32,13 @@ const validations = Yup.object({
     .max(500, "Content too long"),
 });
 
-interface Props {}
+interface Props {
+  onSubmit: (form: ChatForm) => Promise<any>;
+}
 
-const CreateChat = (Props: Props) => {
+const CreateChat = ({ onSubmit }: Props) => {
+  const [open, setOpen] = useState<boolean>(false);
+
   const isDarkMode = document.documentElement.classList.contains("dark");
   const {
     register,
@@ -42,10 +46,9 @@ const CreateChat = (Props: Props) => {
     formState: { errors },
   } = useForm<ChatForm>({ resolver: yupResolver(validations) });
 
-  const onSubmit = async (form: ChatForm) => {
-    console.log("Hello from createChat");
-    CreateChatAsync(form.chatTitle, form.chatContent).then((res) => {
-      if (res?.status === 200) {
+  const onChatCreated = async (form: ChatForm) => {
+    await onSubmit(form).then((res) => {
+      if (res.status === 200) {
         toast.success("Created", {
           position: "top-right",
           autoClose: 5000,
@@ -57,12 +60,13 @@ const CreateChat = (Props: Props) => {
           transition: Bounce,
           closeButton: true,
         });
+        setOpen(false);
       }
     });
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="w-[50px] h-[50px] rounded-3xl">
         <Button
           variant="outline"
@@ -72,7 +76,7 @@ const CreateChat = (Props: Props) => {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onChatCreated)}>
           <DialogHeader>
             <DialogTitle>Add chatter</DialogTitle>
             <DialogDescription>
@@ -113,9 +117,7 @@ const CreateChat = (Props: Props) => {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <DialogClose>
-              <Button type="submit">Create chat</Button>
-            </DialogClose>
+            <Button type="submit">Create chat</Button>
           </DialogFooter>
         </form>
       </DialogContent>

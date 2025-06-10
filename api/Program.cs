@@ -1,62 +1,28 @@
 using System.Reflection.Metadata;
 using System.Text;
+using api;
 using api.Data;
 using api.Interface;
 using api.Repository;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+//builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc(
-        "v1",
-        new OpenApiInfo
-        {
-            Version = "v1",
-            Title = "Chatter",
-            Description = "An api for chatter",
-        }
-    );
-
-    options.AddSecurityDefinition(
-        "Bearer",
-        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Description = "Please enter access token",
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            Scheme = "Bearer",
-        }
-    );
-
-    options.AddSecurityRequirement(
-        new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer",
-                    },
-                },
-                new string[] { }
-            },
-        }
-    );
-});
+builder.Services.AddSingleton<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -94,6 +60,20 @@ builder
         };
     });
 
+builder
+    .Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ReportApiVersions = true;
+        options.ApiVersionReader = new UrlSegmentApiVersionReader();
+    })
+    .AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'VVV"; // e.g., v1, v2
+        options.SubstituteApiVersionInUrl = true;
+    });
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
@@ -114,17 +94,24 @@ builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
 var app = builder.Build();
 
+//for versioning
+var apiVersionDescriptionProvider =
+    app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwagger(options =>
-    {
-        options.SerializeAsV2 = true;
-    });
+    app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("swagger/v1/swagger.json", "Chatter v1");
+        foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint(
+                $"/swagger/{description.GroupName}/swagger.json",
+                description.GroupName.ToUpperInvariant()
+            );
+        }
         options.RoutePrefix = string.Empty;
     });
 }

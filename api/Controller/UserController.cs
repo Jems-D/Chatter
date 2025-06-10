@@ -7,13 +7,16 @@ using api.DTO.Users;
 using api.Interface;
 using api.Mappers.Users;
 using api.Model.Entites;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controller
 {
+    [ApiVersion("1.0")]
     [ApiController]
+    [Route("v{version:apiVersion}/auth")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _repoUser;
@@ -24,7 +27,8 @@ namespace api.Controller
         }
 
         [HttpPost]
-        [Route("auth/register")]
+        [MapToApiVersion("1.0")]
+        [Route("register")]
         public async Task<IActionResult> RegitserAccountEndpoint([FromBody] CreateUserDTO dto)
         {
             if (!ModelState.IsValid)
@@ -42,7 +46,8 @@ namespace api.Controller
         }
 
         [HttpPost]
-        [Route("auth/login")]
+        [MapToApiVersion("1.0")]
+        [Route("login")]
         public async Task<IActionResult> LoginAccountEndpoint([FromBody] LoginUserDTO dto)
         {
             if (!ModelState.IsValid)
@@ -67,7 +72,8 @@ namespace api.Controller
         }
 
         [HttpPost]
-        [Route("auth/refresh-token")]
+        [MapToApiVersion("1.0")]
+        [Route("refresh-token")]
         public async Task<IActionResult> RefreshTokenEndpoint([FromBody] Guid id)
         {
             var user = await _repoUser.RefreshTokenAsync(id);
@@ -89,7 +95,8 @@ namespace api.Controller
         }
 
         [HttpPost]
-        [Route("auth/logout")]
+        [MapToApiVersion("1.0")]
+        [Route("logout")]
         public IActionResult LogoutEndpoint()
         {
             var cookieOptions = new CookieOptions
