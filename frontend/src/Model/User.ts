@@ -1,7 +1,7 @@
 export interface UserResponse {
   id: string;
   username: string;
-  role: string;
+  role: "Admin" | "Moderator" | "User";
   emailAddress: string;
 }
 

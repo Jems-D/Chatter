@@ -10,7 +10,6 @@ import {
 import React from "react";
 import { createContext } from "react";
 import { Bounce, toast } from "react-toastify";
-import axios from "axios";
 
 interface Props {
   children: React.ReactNode;

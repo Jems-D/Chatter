@@ -25,5 +25,7 @@ namespace api.Model
 
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public Emoji Emoji { get; set; } = new Emoji();
     }
 }

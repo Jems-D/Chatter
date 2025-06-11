@@ -1,6 +1,7 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, type SyntheticEvent } from "react";
 import type { Chats } from "../../Model/Chats";
 import ChatSkeleton from "./ChatSkeleton";
+import { AddReactionAsync } from "../../Service/ReactionService";
 
 interface Props {
   chats: Chats[] | undefined;

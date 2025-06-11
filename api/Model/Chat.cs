@@ -38,6 +38,6 @@ namespace api.Model
         public bool isDisabled { get; set; } = false;
 
         public List<Comment> Comments { get; set; } = new List<Comment>();
-        public Reaction Reaction { get; set; } = new Reaction();
+        public List<Reaction> Reactions { get; set; } = new List<Reaction>();
     }
 }

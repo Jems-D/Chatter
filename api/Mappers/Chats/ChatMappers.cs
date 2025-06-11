@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.DTO.Chats;
+using api.Mappers.Reactions;
 using api.Model;
 
 namespace api.Mappers.Chats
@@ -23,6 +24,7 @@ namespace api.Mappers.Chats
                 ChatTitle = chat.ChatTitle,
                 CreatedAt = chat.CreatedAt,
                 CreatedBy = chat.CreatedBy,
+                Reactions = chat.Reactions.Select(s => s.ToReactionDTOFromReaction()).ToList(),
             };
         }
 

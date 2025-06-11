@@ -17,7 +17,7 @@ namespace api.Controller
     [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/reactions")]
-    [Authorize("User")]
+    [Authorize(Roles = "User")]
     [EnableRateLimiting("UserPolicy")]
     public class ReactionController : ControllerBase
     {
@@ -29,6 +29,7 @@ namespace api.Controller
         }
 
         [HttpPost]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> InsertReactionEndpoint(CreateReactionDTO dto)
         {
             var user = User.GetUserId();

@@ -22,7 +22,7 @@ namespace api.Repository
             var insertedReaction = await _context.InsertReactionAsync(reaction);
             if (!insertedReaction.IsSuccess)
                 return null;
-            return insertedReaction.Payload;
+            return 1;
         }
     }
 }

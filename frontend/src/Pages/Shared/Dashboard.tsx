@@ -1,18 +1,32 @@
-import React, { Suspense, useState } from "react";
-import ChatItem from "../../Components/Chat/ChatItem";
 import { CreateChatAsync, GetAllChatsAsync } from "../../Service/ChatService";
-import { array } from "yup";
 import ChatsCard from "../../Components/Chat/ChatsCard";
 import type { Chats } from "../../Model/Chats";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ChatSkeleton from "../../Components/Chat/ChatSkeleton";
-import { Dialog } from "@radix-ui/react-dialog";
 import CreateChat from "../../Components/FormChat/CreateChat";
 import { ToastContainer } from "react-toastify";
 import type { ChatForm } from "../../Model/Forms";
+import { useAuth } from "../../Context/useAuth";
+import { hasPermission, type Role } from "../../Helpers/RoleBasedAccessControl";
+import type { SyntheticEvent } from "react";
+import { AddReactionAsync } from "../../Service/ReactionService";
+
 type Props = {};
 
 const Dashboard = (props: Props) => {
+  const { user } = useAuth();
+
+  const userPermissions: {
+    id: string;
+    role: Role;
+    username: string;
+    emailAddress: string;
+  } = {
+    id: user?.id ?? "0",
+    role: user?.role ?? "Anonymous",
+    username: user?.username ?? "anon",
+    emailAddress: user?.emailAddress ?? "anon@mail.com",
+  };
+
   const fetchChats = async (): Promise<Chats[]> => {
     const result = await GetAllChatsAsync();
     return result?.data ?? [];
@@ -41,7 +55,9 @@ const Dashboard = (props: Props) => {
         <ChatsCard chats={data} />
       </div>
       <div className="fixed bottom-10 right-3 sm:right-15 md:right-3 lg:right-5 xl:right-5 2xl:right-50 block z-10">
-        <CreateChat onSubmit={mutation.mutateAsync} />
+        {hasPermission(userPermissions, "create:chats") && (
+          <CreateChat onSubmit={mutation.mutateAsync} />
+        )}
         <ToastContainer />
       </div>
     </div>

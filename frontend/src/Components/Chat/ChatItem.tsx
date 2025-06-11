@@ -1,24 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, type SyntheticEvent } from "react";
 import type { Chats } from "../../Model/Chats";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import type { Emoji } from "../../Model/Emoji";
 import { GetAllEmojisAsync } from "../../Service/EmojiService";
 import EmojiPicker from "../EmojPicker/EmojiPicker";
 import { Button } from "../ui/button";
-import { Ghost } from "lucide-react";
+import { AddReactionAsync } from "../../Service/ReactionService";
+import { Bounce, toast } from "react-toastify";
 
 interface Props {
   chat: Chats;
 }
 function ChatItem({ chat }: Props) {
   const [emoji, setEmoji] = useState<Emoji[]>([]);
+  const isDarkMode = document.documentElement.classList.contains("dark");
+
+  const onReactionSubmit = async (e: any) => {
+    e.preventDefault();
+    await AddReactionAsync(e.target[0].value, chat.id)
+      .then((res) => {
+        if (res?.status === 201) {
+          toast.success("Reaction added", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+            theme: isDarkMode ? "dark" : "colored",
+            transition: Bounce,
+            closeButton: true,
+          });
+        }
+      })
+      .catch((e) => console.log(e.message));
+  };
 
   useEffect(() => {
     fetchEmoji();
@@ -62,7 +79,7 @@ function ChatItem({ chat }: Props) {
           </Button>
         </div>
         <div className="">
-          <EmojiPicker emojis={emoji} />
+          <EmojiPicker emojis={emoji} onReactionSubmit={onReactionSubmit} />
         </div>
       </CardFooter>
     </Card>

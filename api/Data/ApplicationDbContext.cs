@@ -268,7 +268,7 @@ namespace api.Data
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.CommandText = StoredProcedureConstants.SP_GetAllChats.ToString();
 
-                    var chats = new List<Chat?>();
+                    var chatsDictionary = new Dictionary<int, Chat>();
                     await Database.OpenConnectionAsync();
                     using (var reader = await command.ExecuteReaderAsync())
                     {
@@ -276,23 +276,63 @@ namespace api.Data
                         {
                             while (await reader.ReadAsync())
                             {
-                                var chat = new Chat
+                                int chatId = reader.GetInt32(reader.GetOrdinal("chat_id"));
+                                if (!chatsDictionary.TryGetValue(chatId, out Chat? chat))
                                 {
-                                    id = reader.GetInt32(reader.GetOrdinal("chat_id")),
-                                    ChatTitle = reader.GetString(reader.GetOrdinal("chat_title")),
-                                    ChatContent = reader.GetString(
-                                        reader.GetOrdinal("chat_content")
-                                    ),
-                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("created_at")),
-                                    CreatedBy = reader.GetString(
-                                        reader.GetOrdinal("created_by_name")
-                                    ),
-                                };
+                                    chat = new Chat
+                                    {
+                                        id = reader.GetInt32(reader.GetOrdinal("chat_id")),
+                                        ChatTitle = reader.GetString(
+                                            reader.GetOrdinal("chat_title")
+                                        ),
+                                        ChatContent = reader.GetString(
+                                            reader.GetOrdinal("chat_content")
+                                        ),
+                                        CreatedAt = reader.GetDateTime(
+                                            reader.GetOrdinal("created_at")
+                                        ),
+                                        CreatedById = reader.GetGuid(reader.GetOrdinal("user_id")),
+                                        CreatedBy = reader.GetString(
+                                            reader.GetOrdinal("created_by_name")
+                                        ),
+                                        Reactions = new List<Reaction>(),
+                                    };
 
-                                chats.Add(chat);
+                                    chatsDictionary.Add(chatId, chat);
+                                }
+
+                                if (!await reader.IsDBNullAsync(reader.GetOrdinal("reaction_id")))
+                                {
+                                    var reactions = new Reaction
+                                    {
+                                        ReactionId = reader.GetInt32(
+                                            reader.GetOrdinal("reaction_id")
+                                        ),
+                                        ChatId = reader.GetInt32(reader.GetOrdinal("ChatId")),
+                                        UserId = reader.GetGuid(
+                                            reader.GetOrdinal("UserIdReaction")
+                                        ),
+                                        EmojiId = reader.GetInt32(reader.GetOrdinal("emoji_id")),
+                                        Emoji = new Emoji(),
+                                    };
+
+                                    chat.Reactions.Add(reactions);
+
+                                    var emoji = new Emoji
+                                    {
+                                        EmojiText = reader.GetString(
+                                            reader.GetOrdinal("emoji_text")
+                                        ),
+                                        EmojiSymbol = reader.GetString(
+                                            reader.GetOrdinal("emoji_symbol")
+                                        ),
+                                    };
+
+                                    reactions.Emoji = emoji;
+                                }
                             }
 
-                            result.Payload = chats;
+                            result.Payload = chatsDictionary.Values.ToList();
                         }
                         else
                         {
