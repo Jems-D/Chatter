@@ -1,5 +1,6 @@
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading.RateLimiting;
 using api;
 using api.Data;
 using api.Interface;
@@ -26,11 +27,13 @@ builder.Services.AddSingleton<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
+//Connection String
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+//JwT authentication
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -61,6 +64,7 @@ builder
         };
     });
 
+//Api Versionning
 builder
     .Services.AddApiVersioning(options =>
     {
@@ -75,6 +79,7 @@ builder
         options.SubstituteApiVersionInUrl = true;
     });
 
+//Cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
@@ -90,6 +95,37 @@ builder.Services.AddCors(options =>
     );
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    //get the user name or the ip add
+    options.AddPolicy(
+        "UserPolicy",
+        context =>
+        {
+            var userId =
+                context.User.Identity?.IsAuthenticated == true
+                    ? context.User.Identity.Name
+                    : context.Connection.RemoteIpAddress?.ToString();
+
+            return RateLimitPartition.GetTokenBucketLimiter(
+                userId ?? "anonrymous",
+                _ => new TokenBucketRateLimiterOptions
+                {
+                    TokenLimit = 100,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = 0,
+                    ReplenishmentPeriod = TimeSpan.FromMinutes(1),
+                    TokensPerPeriod = 100,
+                    AutoReplenishment = true,
+                }
+            );
+        }
+    );
+    //changed the default status code from 503(service unabailable) to 429
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
+//Interfaces
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IEmojiRepository, EmojiRepository>();
@@ -122,6 +158,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("ReactFrontEndPolicy");
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

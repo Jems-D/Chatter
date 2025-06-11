@@ -7,14 +7,18 @@ using api.Extensions;
 using api.Interface;
 using api.Mappers.Emojis;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace api.Controller
 {
     [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/reactions")]
+    [Authorize("User")]
+    [EnableRateLimiting("UserPolicy")]
     public class ReactionController : ControllerBase
     {
         private readonly IReactionRepository _repoReaction;

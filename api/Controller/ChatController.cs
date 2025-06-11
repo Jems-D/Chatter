@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace api.Controller
 {
@@ -19,7 +20,7 @@ namespace api.Controller
     [ApiVersion("2.0")]
     [ApiController]
     [Route("v{version:apiVersion}/chats")]
-    [Authorize(Roles = "User")]
+    [EnableRateLimiting("UserPolicy")]
     public class ChatController : ControllerBase
     {
         private readonly IChatRepository _repoChat;
@@ -51,6 +52,7 @@ namespace api.Controller
 
         [HttpPost]
         [MapToApiVersion("1.0")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateChat(CreateChatDTO dto)
         {
             if (!ModelState.IsValid)

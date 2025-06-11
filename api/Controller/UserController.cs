@@ -11,12 +11,14 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace api.Controller
 {
     [ApiVersion("1.0")]
     [ApiController]
     [Route("v{version:apiVersion}/auth")]
+    [EnableRateLimiting("UserPolicy")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _repoUser;

@@ -1,10 +1,7 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { Outlet } from "react-router-dom";
 import { UserProvider } from "./Context/useAuth";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
@@ -18,8 +15,8 @@ function App() {
         </div>
         <QueryClientProvider client={queryClient}>
           <Outlet />
+          <ToastContainer />
         </QueryClientProvider>
-        <ToastContainer />
       </UserProvider>
     </>
   );
