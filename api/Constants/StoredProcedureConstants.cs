@@ -10,5 +10,7 @@ namespace api.Constants
         SP_InsertChat,
         SP_GetAllEmojis,
         SP_InsertReaction,
+        SP_GetAllCommentsPerChat,
+        SP_InsertComment,
     }
 }

@@ -53,7 +53,7 @@ namespace api.Controller
         [HttpPost]
         [MapToApiVersion("1.0")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> CreateChat(CreateChatDTO dto)
+        public async Task<IActionResult> CreateChat([FromBody] CreateChatDTO dto)
         {
             if (!ModelState.IsValid)
             {

@@ -21,16 +21,17 @@ namespace api.Model
         public int ChatId { get; set; }
 
         [Column("content")]
-        [MaxLength(100, ErrorMessage = "Comment too long")]
         public string? Content { get; set; } = string.Empty;
 
         [Column("created_at")]
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         [Column("updated_at")]
-        public DateTime UpdatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         [Column("is_disabled")]
         public Boolean IsDisabled { get; set; } = false;
+
+        public User User { get; set; } = new User();
     }
 }

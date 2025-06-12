@@ -1,20 +1,23 @@
 import React, { lazy, Suspense, type SyntheticEvent } from "react";
 import type { Chats } from "../../Model/Chats";
 import ChatSkeleton from "./ChatSkeleton";
-import { AddReactionAsync } from "../../Service/ReactionService";
+import type { QueryObserverResult } from "@tanstack/react-query";
 
 interface Props {
   chats: Chats[] | undefined;
+  refetch: () => Promise<QueryObserverResult<Chats[], unknown>>;
 }
 
 const ChatItem = lazy(() => import("../Chat/ChatItem"));
 
-const ChatsCard = ({ chats }: Props) => {
+const ChatsCard = ({ chats, refetch }: Props) => {
   console.log("Chats: ", chats);
 
   if (typeof chats === "undefined") {
     return <h3>No chats fetched</h3>;
   }
+
+  console.log("Card refetch:", refetch);
 
   return (
     <ul
@@ -28,7 +31,7 @@ const ChatsCard = ({ chats }: Props) => {
             key={`chats-${index}`}
           >
             <Suspense fallback={<ChatSkeleton />}>
-              <ChatItem chat={chat} />
+              <ChatItem chat={chat} refetch={refetch} />
             </Suspense>
           </li>
         );

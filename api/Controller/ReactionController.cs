@@ -30,7 +30,7 @@ namespace api.Controller
 
         [HttpPost]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> InsertReactionEndpoint(CreateReactionDTO dto)
+        public async Task<IActionResult> InsertReactionEndpoint([FromBody] CreateReactionDTO dto)
         {
             var user = User.GetUserId();
             var createReact = dto.ToCreateReactFromDTO((Guid)user);

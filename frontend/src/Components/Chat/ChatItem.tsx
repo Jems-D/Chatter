@@ -8,11 +8,14 @@ import EmojiPicker from "../EmojPicker/EmojiPicker";
 import { Button } from "../ui/button";
 import { AddReactionAsync } from "../../Service/ReactionService";
 import { Bounce, toast } from "react-toastify";
-
+import ReactionList from "../Reaction/ReactionList";
+import type { QueryObserverResult } from "@tanstack/react-query";
+import { MessageCircle } from "lucide-react";
 interface Props {
   chat: Chats;
+  refetch: () => Promise<QueryObserverResult<Chats[], unknown>>;
 }
-function ChatItem({ chat }: Props) {
+function ChatItem({ chat, refetch }: Props) {
   const [emoji, setEmoji] = useState<Emoji[]>([]);
   const isDarkMode = document.documentElement.classList.contains("dark");
 
@@ -24,7 +27,7 @@ function ChatItem({ chat }: Props) {
           toast.success("Reaction added", {
             position: "top-right",
             autoClose: 5000,
-            hideProgressBar: true,
+            hideProgressBar: false,
             pauseOnHover: true,
             draggable: false,
             progress: undefined,
@@ -48,8 +51,10 @@ function ChatItem({ chat }: Props) {
     }
   };
 
+  console.log("Item refetch:", refetch);
+
   return (
-    <Card className="bg-[var(--color_applewhite)] text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)] dark:bg-[var(--color_appledark)] w-[300px] h-auto flex-col gap-2">
+    <Card className="bg-[var(--color_applewhite)] text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)] dark:bg-[var(--color_appledark)] w-[300px] h-auto flex-col gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
       <CardHeader className="flex-col gap-2">
         <div className="flex gap-1">
           <Avatar className="rounded-[100px] w-[24px] h-[24px]">
@@ -69,17 +74,29 @@ function ChatItem({ chat }: Props) {
       <CardContent className="text-left text-pretty break-all">
         {chat.chatContent}
       </CardContent>
-      <CardFooter className="flex w-full justify-end">
-        <div>
+      <CardFooter className="flex-col">
+        <div className="flex w-full justify-end">
           <Button
             variant="ghost"
-            className="hover:!bg-[var(--color_appledark)]"
+            className="dark:hover:!bg-[var(--color_appledark)] hover:!bg-[var(--color_applewhite)] hover:!text-blue-500"
           >
-            💬
+            <EmojiPicker
+              emojis={emoji}
+              onReactionSubmit={onReactionSubmit}
+              refetch={refetch}
+            />
           </Button>
+          <div className="">
+            <Button
+              variant="ghost"
+              className=" hover:!text-blue-500 hover:bg-[var(--color_applewhite) dark:hover:bg-[var(--color)]"
+            >
+              <MessageCircle strokeWidth={1} />
+            </Button>
+          </div>
         </div>
-        <div className="">
-          <EmojiPicker emojis={emoji} onReactionSubmit={onReactionSubmit} />
+        <div className="flex w-full !justify-start">
+          <ReactionList reactions={chat.reactions} />
         </div>
       </CardFooter>
     </Card>

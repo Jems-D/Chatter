@@ -70,9 +70,9 @@ const CreateChat = ({ onSubmit }: Props) => {
       <DialogTrigger asChild className="w-[50px] h-[50px] rounded-3xl">
         <Button
           variant="outline"
-          className="!bg-[var(--color_twitterblue)] !p-10"
+          className="!bg-[var(--color_twitterblue)] !p-10 cursor-pointer"
         >
-          <Pen className="!h-[30px] !w-[30px] " />
+          <Pen className="!h-[30px] !w-[30px] text-[var(--color_applewhite)] dark:text-[var(--color_appledark)]" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

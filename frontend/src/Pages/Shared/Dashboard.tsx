@@ -1,7 +1,12 @@
 import { CreateChatAsync, GetAllChatsAsync } from "../../Service/ChatService";
 import ChatsCard from "../../Components/Chat/ChatsCard";
 import type { Chats } from "../../Model/Chats";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryResult,
+} from "@tanstack/react-query";
 import CreateChat from "../../Components/FormChat/CreateChat";
 import { ToastContainer } from "react-toastify";
 import type { ChatForm } from "../../Model/Forms";
@@ -36,10 +41,11 @@ const Dashboard = (props: Props) => {
     return await CreateChatAsync(form.chatTitle, form.chatContent);
   };
 
-  const { data, status, isLoading } = useQuery<Chats[]>({
+  const { data, status, isLoading, refetch } = useQuery<Chats[]>({
     queryKey: ["chats"],
     queryFn: fetchChats,
   });
+  console.log("Dashboard refetch:", refetch);
 
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -52,13 +58,12 @@ const Dashboard = (props: Props) => {
   return (
     <div className="grid place-items-center">
       <div className="w-full sm:max-w-[310px] md:max-w-[620px]   lg:max-w-[920px] xl:max-w-[1500px] px-4">
-        <ChatsCard chats={data} />
+        <ChatsCard chats={data} refetch={refetch} />
       </div>
       <div className="fixed bottom-10 right-3 sm:right-15 md:right-3 lg:right-5 xl:right-5 2xl:right-50 block z-10">
         {hasPermission(userPermissions, "create:chats") && (
           <CreateChat onSubmit={mutation.mutateAsync} />
         )}
-        <ToastContainer />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using api.Constants;
 using api.DTO.Chats;
 using api.DTO.SPs;
@@ -517,6 +518,122 @@ namespace api.Data
                 result.IsSuccess = false;
             }
 
+            return result;
+        }
+
+        #endregion
+
+        #region Comments
+
+        public async Task<APIResult<List<Comment?>>> GetAllCommentAsync(int? chatId)
+        {
+            var result = new APIResult<List<Comment>>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText =
+                        StoredProcedureConstants.SP_GetAllCommentsPerChat.ToString();
+                    command.Parameters.Add(new SqlParameter("@ChatId", chatId));
+
+                    var comments = new List<Comment>();
+                    await Database.OpenConnectionAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var comment = new Comment
+                                {
+                                    CommentId = reader.GetInt32(reader.GetOrdinal("comment_id")),
+                                    CreatedById = reader.GetGuid(reader.GetOrdinal("user_id")),
+                                    ChatId = reader.GetInt32(reader.GetOrdinal("chat_id")),
+                                    Content = reader.GetString(reader.GetOrdinal("content")),
+                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("created_at")),
+                                    IsDisabled = reader.GetBoolean(
+                                        reader.GetOrdinal("is_disabled")
+                                    ),
+                                    User = new User(),
+                                };
+
+                                var user = new User
+                                {
+                                    UserName = reader.GetString(reader.GetOrdinal("user_name")),
+                                };
+
+                                comment.User = user;
+                                comments.Add(comment);
+                            }
+
+                            result.Payload = comments;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+            return result;
+        }
+
+        public async Task<APIResult<int?>> InsertCommentAsync(Comment comment)
+        {
+            var result = new APIResult<int?>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_InsertComment.ToString();
+                    command.Parameters.Add(new SqlParameter("@ChatId", comment.ChatId));
+                    command.Parameters.Add(new SqlParameter("@Content", comment.Content));
+                    command.Parameters.Add(new SqlParameter("@UserId", comment.CreatedById));
+                    command.Parameters.Add(new SqlParameter("@CreatedAt", comment.CreatedAt));
+                    command.Parameters.Add(new SqlParameter("@UpdatedAt", comment.UpdatedAt));
+
+                    await Database.OpenConnectionAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                result.Payload = reader.GetInt32(reader.GetOrdinal("comment_id"));
+                            }
+                        }
+                        else
+                        {
+                            result.StatusCode = 500;
+                            result.Message = "Server Error";
+                            result.IsSuccess = false;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
             return result;
         }
 
