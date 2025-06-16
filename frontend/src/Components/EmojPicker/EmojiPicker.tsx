@@ -31,8 +31,8 @@ const EmojiPicker = ({ emojis, onReactionSubmit, refetch }: Props) => {
           <SmilePlus strokeWidth={1} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
-        <ul className="list-none inline-flex flex-wrap bg-accent gap-2 p-2 rounded-sm">
+      <PopoverContent className="w-auto p-0 !border-gray-500 !border-1 rounded-sm dark:border-gray-200">
+        <ul className="list-none inline-flex flex-wrap bg-accent gap-2 p-2 rounded-sm ">
           {emojis.map((emoji, index) => {
             return (
               <li key={`emoji-${emoji}-${index}`}>

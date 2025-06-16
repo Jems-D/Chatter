@@ -10,12 +10,13 @@ import { AddReactionAsync } from "../../Service/ReactionService";
 import { Bounce, toast } from "react-toastify";
 import ReactionList from "../Reaction/ReactionList";
 import type { QueryObserverResult } from "@tanstack/react-query";
-import { MessageCircle } from "lucide-react";
+import OpenChat from "../ChatView/OpenChat";
 interface Props {
   chat: Chats;
   refetch: () => Promise<QueryObserverResult<Chats[], unknown>>;
+  isOpen?: boolean;
 }
-function ChatItem({ chat, refetch }: Props) {
+function ChatItem({ chat, refetch, isOpen = false }: Props) {
   const [emoji, setEmoji] = useState<Emoji[]>([]);
   const isDarkMode = document.documentElement.classList.contains("dark");
 
@@ -54,7 +55,13 @@ function ChatItem({ chat, refetch }: Props) {
   console.log("Item refetch:", refetch);
 
   return (
-    <Card className="bg-[var(--color_applewhite)] text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)] dark:bg-[var(--color_appledark)] w-[300px] h-auto flex-col gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+    <Card
+      className={` text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)]  w-[300px] h-auto flex-col gap-2 ${
+        isOpen === false
+          ? "shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-[var(--color_applewhite)] dark:bg-[var(--color_appledark)] w-[300px]"
+          : "shadow-none border-0 w-auto bg-white"
+      }`}
+    >
       <CardHeader className="flex-col gap-2">
         <div className="flex gap-1">
           <Avatar className="rounded-[100px] w-[24px] h-[24px]">
@@ -75,26 +82,23 @@ function ChatItem({ chat, refetch }: Props) {
         {chat.chatContent}
       </CardContent>
       <CardFooter className="flex-col">
-        <div className="flex w-full justify-end">
-          <Button
-            variant="ghost"
-            className="dark:hover:!bg-[var(--color_appledark)] hover:!bg-[var(--color_applewhite)] hover:!text-blue-500"
-          >
-            <EmojiPicker
-              emojis={emoji}
-              onReactionSubmit={onReactionSubmit}
-              refetch={refetch}
-            />
-          </Button>
-          <div className="">
+        {!isOpen && (
+          <div className="flex w-full justify-end">
             <Button
               variant="ghost"
-              className=" hover:!text-blue-500 hover:bg-[var(--color_applewhite) dark:hover:bg-[var(--color)]"
+              className="dark:hover:!bg-[var(--color_appledark)] hover:!bg-[var(--color_applewhite)] hover:!text-blue-500"
             >
-              <MessageCircle strokeWidth={1} />
+              <EmojiPicker
+                emojis={emoji}
+                onReactionSubmit={onReactionSubmit}
+                refetch={refetch}
+              />
             </Button>
+            <div className="!shadow-0 !border-0 !rounded-0">
+              <OpenChat chat={chat} />
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex w-full !justify-start">
           <ReactionList reactions={chat.reactions} />
         </div>

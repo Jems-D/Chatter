@@ -72,7 +72,7 @@ const CreateChat = ({ onSubmit }: Props) => {
           variant="outline"
           className="!bg-[var(--color_twitterblue)] !p-10 cursor-pointer"
         >
-          <Pen className="!h-[30px] !w-[30px] text-[var(--color_applewhite)] dark:text-[var(--color_appledark)]" />
+          <Pen className="!h-[30px] !w-[30px] text-[var(--color_applewhite)]" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -87,11 +87,7 @@ const CreateChat = ({ onSubmit }: Props) => {
           <div className="grid gap-4">
             <div className="grid gap-3">
               <Label htmlFor="title-1">Title</Label>
-              <Input
-                id="title-1"
-                defaultValue="Title"
-                {...register("chatTitle")}
-              />
+              <Input id="title-1" defaultValue="" {...register("chatTitle")} />
               {errors?.chatTitle?.message && (
                 <span className=" mb-2 text-xs text-red-600 text-right dark:text-red-400">
                   {errors.chatTitle.message}
@@ -102,7 +98,7 @@ const CreateChat = ({ onSubmit }: Props) => {
               <Label htmlFor="content-1">Content</Label>
               <Textarea
                 id="content-1"
-                defaultValue="Your content here"
+                defaultValue=""
                 className="h-40"
                 {...register("chatContent")}
               />
