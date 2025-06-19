@@ -84,12 +84,12 @@ const OpenChat = ({ chat }: Props) => {
           <MessageCircle strokeWidth={1} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-4xl w-[80vw] h-[80vh] p-0 bg-white rounded-2xl flex flex-col">
+      <DialogContent className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-4xl w-[80vw] h-[80vh] p-0 bg-white rounded-2xl flex flex-col dark:bg-[var(--color_appledark)] text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)]">
         <DialogHeader className="p-4">
           <DialogTitle hidden></DialogTitle>
           <DialogDescription hidden></DialogDescription>
           <DialogClose asChild>
-            <Button variant="ghost" size="icon" className="">
+            <Button variant="ghost" size="icon" className="hover:text-red-500">
               <X strokeWidth={1} />
             </Button>
           </DialogClose>

@@ -23,6 +23,7 @@ type RegisterForm = {
   username: string;
   emailAddress: string;
   password: string;
+  confirmPassword: string;
 };
 
 const validations = Yup.object({
@@ -36,6 +37,9 @@ const validations = Yup.object({
   password: Yup.string()
     .required("Password is required")
     .min(8, "Password is not secure"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Password must match")
+    .required("Please confirm your password"),
 });
 
 const RegisterPage = ({}: Props) => {
@@ -122,6 +126,21 @@ const RegisterPage = ({}: Props) => {
                   {errors?.password?.message && (
                     <span className="text-xs text-red-600 text-right dark:text-red-400">
                       {errors.password.message}
+                    </span>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <div className="flex items-center">
+                    <Label htmlFor="password">Confim Password</Label>
+                  </div>
+                  <Input
+                    id="password"
+                    type="password"
+                    {...register("confirmPassword")}
+                  />
+                  {errors?.confirmPassword?.message && (
+                    <span className="text-xs text-red-600 text-right dark:text-red-400">
+                      {errors.confirmPassword.message}
                     </span>
                   )}
                 </div>

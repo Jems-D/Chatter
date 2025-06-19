@@ -9,7 +9,7 @@ interface Props {
 
 const CommentItem = ({ comment }: Props) => {
   return (
-    <Card className="shadow-none border-0 rounded-0 gap-1 py-3">
+    <Card className="shadow-none border-0 rounded-0 gap-1 py-3 bg-white dark:bg-[var(--color_appledark)] text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)]">
       <CardHeader className="">
         <div className="flex gap-1">
           <Avatar className="rounded-[100px] w-[24px] h-[24px]">

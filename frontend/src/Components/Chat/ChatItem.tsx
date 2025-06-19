@@ -56,10 +56,10 @@ function ChatItem({ chat, refetch, isOpen = false }: Props) {
 
   return (
     <Card
-      className={` text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)]  w-[300px] h-auto flex-col gap-2 ${
+      className={` text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)]  w-[300px] h-auto flex-col gap-2 dark:bg-[var(--color_appledark)] ${
         isOpen === false
-          ? "shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-[var(--color_applewhite)] dark:bg-[var(--color_appledark)] w-[300px]"
-          : "shadow-none border-0 w-auto bg-white"
+          ? "shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-[var(--color_applewhite)] w-[300px]"
+          : "!shadow-none border-0 w-auto bg-white !rounded-0"
       }`}
     >
       <CardHeader className="flex-col gap-2">
@@ -94,7 +94,7 @@ function ChatItem({ chat, refetch, isOpen = false }: Props) {
                 refetch={refetch}
               />
             </Button>
-            <div className="!shadow-0 !border-0 !rounded-0">
+            <div className="">
               <OpenChat chat={chat} />
             </div>
           </div>
