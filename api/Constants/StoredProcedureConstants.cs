@@ -12,5 +12,8 @@ namespace api.Constants
         SP_InsertReaction,
         SP_GetAllCommentsPerChat,
         SP_InsertComment,
+        SP_DeleteComment,
+        SP_DeleteChat,
+        SP_DeleteReaction,
     }
 }

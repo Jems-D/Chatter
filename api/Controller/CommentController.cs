@@ -16,7 +16,7 @@ namespace api.Controller
 {
     [ApiController]
     [ApiVersion("1.0")]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User, Moderator, Admin")]
     [Route("v{version:apiVersion}/comments")]
     [EnableRateLimiting("UserPolicy")]
     public class CommentController : ControllerBase
@@ -29,6 +29,7 @@ namespace api.Controller
         }
 
         [HttpGet]
+        [MapToApiVersion("1.00")]
         public async Task<IActionResult> GetAllCommentsEndpoint([FromQuery] int? chatId)
         {
             var comments = await _repoComment.GetAllComments(chatId);
@@ -38,6 +39,7 @@ namespace api.Controller
         }
 
         [HttpPost("{chatId:int}")]
+        [MapToApiVersion("1.00")]
         public async Task<IActionResult> CreateCommentEndpoint(
             [FromRoute] int chatId,
             [FromBody] CreateCommentDTO dto
@@ -50,6 +52,16 @@ namespace api.Controller
                 return BadRequest("Comment not created");
 
             return Ok(createdCommentId);
+        }
+
+        [HttpPatch("{commentId:int}")]
+        [MapToApiVersion("1.00")]
+        public async Task<IActionResult> DeleteCommentEndpoint([FromRoute] int commentId)
+        {
+            var result = await _repoComment.DeleteComment(commentId);
+            if (result is null)
+                return BadRequest("Comment not deleted");
+            return Ok(result);
         }
     }
 }

@@ -9,5 +9,6 @@ namespace api.Interface
     public interface IReactionRepository
     {
         Task<int?> InsertReaction(Reaction reaction);
+        Task<bool?> DeleteReaction(int reactionId);
     }
 }

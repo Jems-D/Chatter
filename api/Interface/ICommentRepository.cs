@@ -12,5 +12,7 @@ namespace api.Interface
         Task<List<CommentDTO?>> GetAllComments(int? chatId);
 
         Task<int?> CreateComment(Comment comment);
+
+        Task<bool?> DeleteComment(int commentId);
     }
 }

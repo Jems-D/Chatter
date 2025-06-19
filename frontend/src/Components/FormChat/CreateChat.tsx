@@ -49,17 +49,7 @@ const CreateChat = ({ onSubmit }: Props) => {
   const onChatCreated = async (form: ChatForm) => {
     await onSubmit(form).then((res) => {
       if (res.status === 200) {
-        toast.success("Created", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          pauseOnHover: true,
-          draggable: false,
-          progress: undefined,
-          theme: isDarkMode ? "dark" : "colored",
-          transition: Bounce,
-          closeButton: true,
-        });
+        toast.success("Created");
         setOpen(false);
       }
     });

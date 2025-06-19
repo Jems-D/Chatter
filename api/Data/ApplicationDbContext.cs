@@ -521,6 +521,86 @@ namespace api.Data
             return result;
         }
 
+        public async Task<APIResult<bool?>> DeleteChatAsync(int chatId)
+        {
+            var result = new APIResult<bool?>
+            {
+                StatusCode = 200,
+                IsSuccess = true,
+                Message = "Success",
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_DeleteChat.ToString();
+                    command.Parameters.Add(new SqlParameter("@ChatId", chatId));
+
+                    await Database.OpenConnectionAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            result.Payload = reader.GetBoolean(
+                                reader.GetOrdinal("OperationStatus")
+                            );
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.IsSuccess = false;
+                result.Message = ex.Message;
+            }
+
+            return result;
+        }
+
+        public async Task<APIResult<bool?>> DeleteReactionsAsync(int reactionId)
+        {
+            var result = new APIResult<bool?>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_DeleteReaction.ToString();
+                    command.Parameters.Add(new SqlParameter("@ReactionId", reactionId));
+
+                    await Database.OpenConnectionAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                result.Payload = reader.GetBoolean(
+                                    reader.GetOrdinal("OperationStatus")
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+            return result;
+        }
+
         #endregion
 
         #region Comments
@@ -624,6 +704,48 @@ namespace api.Data
                             result.StatusCode = 500;
                             result.Message = "Server Error";
                             result.IsSuccess = false;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+            return result;
+        }
+
+        public async Task<APIResult<bool?>> DeleteCommentAsync(int commentId)
+        {
+            var result = new APIResult<bool?>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_DeleteComment.ToString();
+                    command.Parameters.Add(new SqlParameter("@CommentId", commentId));
+
+                    await Database.OpenConnectionAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                result.Payload = reader.GetBoolean(
+                                    reader.GetOrdinal("OperationStatus")
+                                );
+                            }
                         }
                     }
                 }

@@ -52,7 +52,7 @@ namespace api.Controller
 
         [HttpPost]
         [MapToApiVersion("1.0")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User, Moderator, Admin")]
         public async Task<IActionResult> CreateChat([FromBody] CreateChatDTO dto)
         {
             if (!ModelState.IsValid)
@@ -73,6 +73,17 @@ namespace api.Controller
                 return StatusCode(500, "Something went wrong");
             }
             return Ok(insertedChat);
+        }
+
+        [HttpPatch("{chatId:int}")]
+        [MapToApiVersion("1.00")]
+        [Authorize(Roles = "User, Moderator, Admin")]
+        public async Task<IActionResult> DeleteChatEndpoint([FromRoute] int chatId)
+        {
+            var results = await _repoChat.DeletChat(chatId);
+            if (results is null)
+                return BadRequest("Chat not deleted");
+            return NoContent();
         }
     }
 }

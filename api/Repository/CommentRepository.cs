@@ -28,6 +28,14 @@ namespace api.Repository
             return createdComment.Payload;
         }
 
+        public async Task<bool?> DeleteComment(int commentId)
+        {
+            var result = await _context.DeleteCommentAsync(commentId);
+            if (!result.IsSuccess)
+                return null;
+            return result.Payload;
+        }
+
         public async Task<List<CommentDTO?>> GetAllComments(int? chatId)
         {
             var comments = await _context.GetAllCommentAsync(chatId);

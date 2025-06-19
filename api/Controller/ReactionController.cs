@@ -17,7 +17,7 @@ namespace api.Controller
     [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/reactions")]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User, Moderator, Admin")]
     [EnableRateLimiting("UserPolicy")]
     public class ReactionController : ControllerBase
     {
@@ -39,6 +39,16 @@ namespace api.Controller
             if (reaction == null)
                 return BadRequest("Reaction not added");
             return Created();
+        }
+
+        [HttpDelete("{reactionId:int}")]
+        [MapToApiVersion("1.00")]
+        public async Task<IActionResult> DeleteReactionEndpoint([FromRoute] int reactionId)
+        {
+            var results = await _repoReaction.DeleteReaction(reactionId);
+            if (results is null)
+                return BadRequest("Reaction not removed");
+            return NoContent();
         }
     }
 }

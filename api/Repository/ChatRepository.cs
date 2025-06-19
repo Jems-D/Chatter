@@ -29,6 +29,16 @@ namespace api.Repository
             return insertedChat.Payload.ToChatDTOFromChat();
         }
 
+        public async Task<bool?> DeletChat(int chatId)
+        {
+            var results = await _context.DeleteChatAsync(chatId);
+            if (!results.IsSuccess)
+            {
+                return null;
+            }
+            return results.Payload;
+        }
+
         public async Task<List<ChatDTO?>> GetAllChats()
         {
             var result = await _context.GetAllChatsAsync();

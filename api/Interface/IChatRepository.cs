@@ -11,5 +11,6 @@ namespace api.Interface
     {
         Task<List<ChatDTO?>> GetAllChats();
         Task<ChatDTO?> CreateChat(Chat chat);
+        Task<bool?> DeletChat(int chatId);
     }
 }
