@@ -112,7 +112,7 @@ const OpenChat = ({ chat }: Props) => {
           {/* Middle: Comments (scrollable) */}
           <div className="flex-1 overflow-y-auto p-4 border-b border-gray-200">
             <span className="font-semibold block mb-2">Comments</span>
-            <CommentCard comments={data} />
+            <CommentCard comments={data} refetch={refetch} />
           </div>
 
           {/* creating new comment */}

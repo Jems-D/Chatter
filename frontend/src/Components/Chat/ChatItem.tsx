@@ -6,11 +6,19 @@ import type { Emoji } from "../../Model/Emoji";
 import { GetAllEmojisAsync } from "../../Service/EmojiService";
 import EmojiPicker from "../EmojPicker/EmojiPicker";
 import { Button } from "../ui/button";
-import { AddReactionAsync } from "../../Service/ReactionService";
+import {
+  AddReactionAsync,
+  RemoveReactionAsync,
+} from "../../Service/ReactionService";
 import { Bounce, toast } from "react-toastify";
 import ReactionList from "../Reaction/ReactionList";
 import type { QueryObserverResult } from "@tanstack/react-query";
 import OpenChat from "../ChatView/OpenChat";
+import { Ellipsis } from "lucide-react";
+import ChatMenu from "../ChatMenu/ChatMenu";
+import { DeleteChatAsync } from "../../Service/ChatService";
+import { useAuth } from "../../Context/useAuth";
+import { hasPermission, type Role } from "../../Helpers/RoleBasedAccessControl";
 interface Props {
   chat: Chats;
   refetch: () => Promise<QueryObserverResult<Chats[], unknown>>;
@@ -18,27 +26,49 @@ interface Props {
 }
 function ChatItem({ chat, refetch, isOpen = false }: Props) {
   const [emoji, setEmoji] = useState<Emoji[]>([]);
-  const isDarkMode = document.documentElement.classList.contains("dark");
+
+  const { user } = useAuth();
+
+  const userPermissions: {
+    id: string;
+    role: Role;
+    username: string;
+    emailAddress: string;
+  } = {
+    id: user?.id ?? "0",
+    role: user?.role ?? "Anonymous",
+    username: user?.username ?? "anon",
+    emailAddress: user?.emailAddress ?? "anon@mail.com",
+  };
 
   const onReactionSubmit = async (e: any) => {
     e.preventDefault();
     await AddReactionAsync(e.target[0].value, chat.id)
       .then((res) => {
         if (res?.status === 201) {
-          toast.success("Reaction added", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-            theme: isDarkMode ? "dark" : "colored",
-            transition: Bounce,
-            closeButton: true,
-          });
+          toast.success("Reaction added");
         }
       })
       .catch((e) => console.log(e.message));
+  };
+
+  const onReactionDelete = async (e: any) => {
+    e.preventDefault();
+    await RemoveReactionAsync(e.target[0].value).then((res) => {
+      if (res?.status === 204) {
+        toast.success("Reaction Removed");
+      }
+    });
+  };
+
+  const onChatDelete = async (e: any) => {
+    e.preventDefault();
+    await DeleteChatAsync(chat.id).then((res) => {
+      if (res?.status === 204) {
+        toast.success("Post removed");
+        refetch();
+      }
+    });
   };
 
   useEffect(() => {
@@ -52,8 +82,6 @@ function ChatItem({ chat, refetch, isOpen = false }: Props) {
     }
   };
 
-  console.log("Item refetch:", refetch);
-
   return (
     <Card
       className={` text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)]  w-[300px] h-auto flex-col gap-2 dark:bg-[var(--color_appledark)] ${
@@ -63,17 +91,27 @@ function ChatItem({ chat, refetch, isOpen = false }: Props) {
       }`}
     >
       <CardHeader className="flex-col gap-2">
-        <div className="flex gap-1">
-          <Avatar className="rounded-[100px] w-[24px] h-[24px]">
-            <AvatarImage
-              src="https://github.com/shadcn.png"
-              alt="@shadcnpng"
-              className="rounded-[100px]"
-            />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <span className="font-semibold">@{chat.createdBy}</span>
+        <div className="flex justify-between">
+          <div className="flex gap-1">
+            <Avatar className="rounded-[100px] w-[24px] h-[24px]">
+              <AvatarImage
+                src="https://github.com/shadcn.png"
+                alt="@shadcnpng"
+                className="rounded-[100px]"
+              />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <span className="font-semibold">@{chat.createdBy}</span>
+          </div>
+          {(hasPermission(userPermissions, "update:ownChats") ||
+            hasPermission(userPermissions, "delete:ownChats") ||
+            hasPermission(userPermissions, "delete:chats")) && (
+            <div className={`ml-auto ${isOpen ? "hidden" : ""}`}>
+              <ChatMenu onDelete={onChatDelete} userId={chat.createdById} />
+            </div>
+          )}
         </div>
+
         <div>
           <h3 className="text-xl font-bold text-left">{chat.chatTitle}</h3>
         </div>
@@ -100,7 +138,11 @@ function ChatItem({ chat, refetch, isOpen = false }: Props) {
           </div>
         )}
         <div className="flex w-full !justify-start">
-          <ReactionList reactions={chat.reactions} />
+          <ReactionList
+            reactions={chat.reactions}
+            onDelete={onReactionDelete}
+            refetch={refetch}
+          />
         </div>
       </CardFooter>
     </Card>

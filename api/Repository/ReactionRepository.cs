@@ -17,10 +17,12 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<bool?> DeleteReaction(int reactionId)
+        public async Task<int?> DeleteReaction(int reactionId)
         {
             var results = await _context.DeleteReactionsAsync(reactionId);
             if (!results.IsSuccess)
+                return null;
+            if (results.Payload == 0)
                 return null;
             return results.Payload;
         }

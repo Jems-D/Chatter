@@ -34,3 +34,14 @@ export const CreateCommentAsync = async (chatId: number, content: string) => {
     handleError(err);
   }
 };
+
+export const DeleteCommentAsync = async (commentId: number) => {
+  try {
+    const result = await axios.patch(`${commentUrl}/${commentId}`, null, {
+      withCredentials: true,
+    });
+    return result;
+  } catch (err: any) {
+    handleError(err);
+  }
+};

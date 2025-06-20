@@ -21,6 +21,8 @@ import { Textarea } from "../ui/textarea";
 import type { Chats } from "../../Model/Chats";
 import { CreateChatAsync } from "../../Service/ChatService";
 import { Bounce, toast } from "react-toastify";
+import { useAuth } from "../../Context/useAuth";
+import { Navigate } from "react-router-dom";
 const validations = Yup.object({
   chatTitle: Yup.string()
     .required("Title is required")
@@ -37,9 +39,8 @@ interface Props {
 }
 
 const CreateChat = ({ onSubmit }: Props) => {
+  const { isAuthenticated } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
-
-  const isDarkMode = document.documentElement.classList.contains("dark");
   const {
     register,
     handleSubmit,
@@ -54,6 +55,10 @@ const CreateChat = ({ onSubmit }: Props) => {
       }
     });
   };
+
+  if (!isAuthenticated() && open) {
+    return <Navigate to="/sign-in" state={{ fromProtectedRoute: true }} />;
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

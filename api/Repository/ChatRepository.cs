@@ -29,13 +29,14 @@ namespace api.Repository
             return insertedChat.Payload.ToChatDTOFromChat();
         }
 
-        public async Task<bool?> DeletChat(int chatId)
+        public async Task<int?> DeletChat(int chatId)
         {
             var results = await _context.DeleteChatAsync(chatId);
             if (!results.IsSuccess)
-            {
                 return null;
-            }
+
+            if (results.Payload == 0)
+                return null;
             return results.Payload;
         }
 

@@ -6,6 +6,6 @@ export interface Chats {
   chatContent: string;
   createdAt: string;
   createdBy: string;
-  userId: string;
+  createdById: string;
   reactions: Reactions[];
 }

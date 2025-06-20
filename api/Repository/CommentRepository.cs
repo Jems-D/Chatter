@@ -28,10 +28,12 @@ namespace api.Repository
             return createdComment.Payload;
         }
 
-        public async Task<bool?> DeleteComment(int commentId)
+        public async Task<int?> DeleteComment(int commentId)
         {
             var result = await _context.DeleteCommentAsync(commentId);
             if (!result.IsSuccess)
+                return null;
+            if (result.Payload == 0)
                 return null;
             return result.Payload;
         }

@@ -17,8 +17,6 @@ const ChatsCard = ({ chats, refetch }: Props) => {
     return <h3>No chats fetched</h3>;
   }
 
-  console.log("Card refetch:", refetch);
-
   return (
     <ul
       className="list-none columns-1 md:columns-2  lg:columns-3 xl:columns-4"

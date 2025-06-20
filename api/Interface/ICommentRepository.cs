@@ -13,6 +13,6 @@ namespace api.Interface
 
         Task<int?> CreateComment(Comment comment);
 
-        Task<bool?> DeleteComment(int commentId);
+        Task<int?> DeleteComment(int commentId);
     }
 }

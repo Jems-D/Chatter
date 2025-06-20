@@ -371,7 +371,12 @@ namespace api.Data
                     command.Parameters.Add(new SqlParameter("@ChatTitle", chat.ChatTitle));
                     command.Parameters.Add(new SqlParameter("@ChatContent", chat.ChatContent));
                     command.Parameters.Add(new SqlParameter("@CreatedBy", chat.CreatedBy));
-                    command.Parameters.Add(new SqlParameter("@UserId", chat.CreatedById));
+                    command.Parameters.Add(
+                        new SqlParameter("@UserId", SqlDbType.UniqueIdentifier)
+                        {
+                            Value = chat.CreatedById,
+                        }
+                    );
                     command.Parameters.Add(new SqlParameter("@CreatedAt", chat.CreatedAt));
                     command.Parameters.Add(new SqlParameter("@UpdatedAt", chat.UpdatedAt));
 
@@ -415,6 +420,48 @@ namespace api.Data
                 result.Message = ex.Message;
                 result.IsSuccess = false;
             }
+            return result;
+        }
+
+        public async Task<APIResult<int?>> DeleteChatAsync(int chatId)
+        {
+            var result = new APIResult<int?>
+            {
+                StatusCode = 200,
+                IsSuccess = true,
+                Message = "Success",
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_DeleteChat.ToString();
+                    command.Parameters.Add(new SqlParameter("@ChatId", chatId));
+
+                    await Database.OpenConnectionAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                result.Payload = reader.GetInt32(
+                                    reader.GetOrdinal("OperationStatus")
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.IsSuccess = false;
+                result.Message = ex.Message;
+            }
+
             return result;
         }
 
@@ -521,48 +568,9 @@ namespace api.Data
             return result;
         }
 
-        public async Task<APIResult<bool?>> DeleteChatAsync(int chatId)
+        public async Task<APIResult<int?>> DeleteReactionsAsync(int reactionId)
         {
-            var result = new APIResult<bool?>
-            {
-                StatusCode = 200,
-                IsSuccess = true,
-                Message = "Success",
-            };
-
-            try
-            {
-                using (var command = Database.GetDbConnection().CreateCommand())
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.CommandText = StoredProcedureConstants.SP_DeleteChat.ToString();
-                    command.Parameters.Add(new SqlParameter("@ChatId", chatId));
-
-                    await Database.OpenConnectionAsync();
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        if (reader.HasRows)
-                        {
-                            result.Payload = reader.GetBoolean(
-                                reader.GetOrdinal("OperationStatus")
-                            );
-                        }
-                    }
-                }
-            }
-            catch (SqlException ex)
-            {
-                result.StatusCode = 500;
-                result.IsSuccess = false;
-                result.Message = ex.Message;
-            }
-
-            return result;
-        }
-
-        public async Task<APIResult<bool?>> DeleteReactionsAsync(int reactionId)
-        {
-            var result = new APIResult<bool?>
+            var result = new APIResult<int?>
             {
                 StatusCode = 200,
                 Message = "Success",
@@ -584,7 +592,7 @@ namespace api.Data
                         {
                             if (await reader.ReadAsync())
                             {
-                                result.Payload = reader.GetBoolean(
+                                result.Payload = reader.GetInt32(
                                     reader.GetOrdinal("OperationStatus")
                                 );
                             }
@@ -717,9 +725,9 @@ namespace api.Data
             return result;
         }
 
-        public async Task<APIResult<bool?>> DeleteCommentAsync(int commentId)
+        public async Task<APIResult<int?>> DeleteCommentAsync(int commentId)
         {
-            var result = new APIResult<bool?>
+            var result = new APIResult<int?>
             {
                 StatusCode = 200,
                 Message = "Success",
@@ -742,7 +750,7 @@ namespace api.Data
                         {
                             if (await reader.ReadAsync())
                             {
-                                result.Payload = reader.GetBoolean(
+                                result.Payload = reader.GetInt32(
                                     reader.GetOrdinal("OperationStatus")
                                 );
                             }

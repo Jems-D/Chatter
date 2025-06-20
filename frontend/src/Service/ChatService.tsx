@@ -36,3 +36,15 @@ export const CreateChatAsync = async (
     handleError(error);
   }
 };
+
+export const DeleteChatAsync = async (chatId: number) => {
+  try {
+    const result = await axios.patch(`${chatUrl}/${chatId}`, null, {
+      withCredentials: true,
+    });
+
+    return result;
+  } catch (err: any) {
+    handleError(err);
+  }
+};

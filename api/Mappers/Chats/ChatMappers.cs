@@ -24,6 +24,7 @@ namespace api.Mappers.Chats
                 ChatTitle = chat.ChatTitle,
                 CreatedAt = chat.CreatedAt,
                 CreatedBy = chat.CreatedBy,
+                CreatedById = chat.CreatedById,
                 Reactions = chat.Reactions.Select(s => s.ToReactionDTOFromReaction()).ToList(),
             };
         }

@@ -20,3 +20,14 @@ export const AddReactionAsync = async (emojiId: number, chatId: number) => {
     handleError(err);
   }
 };
+
+export const RemoveReactionAsync = async (reactionId: number) => {
+  try {
+    const result = axios.delete(`${reactionUrl}/${reactionId}`, {
+      withCredentials: true,
+    });
+    return result;
+  } catch (err: any) {
+    handleError(err);
+  }
+};

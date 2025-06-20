@@ -12,6 +12,7 @@
   --color_text_dark_ii: #e4e4e7;
   --color_text_dark_iii: #ffffff;
   --color_twitterblue: #1a8cd8;
+  --color_reactionblue: rgba(26, 140, 216, 0.8);
 }
 body {
   @apply bg-[var(--color_applewhite)] dark:bg-[var(--color_appledark)];

@@ -18,20 +18,6 @@ import { AddReactionAsync } from "../../Service/ReactionService";
 type Props = {};
 
 const Dashboard = (props: Props) => {
-  const { user } = useAuth();
-
-  const userPermissions: {
-    id: string;
-    role: Role;
-    username: string;
-    emailAddress: string;
-  } = {
-    id: user?.id ?? "0",
-    role: user?.role ?? "Anonymous",
-    username: user?.username ?? "anon",
-    emailAddress: user?.emailAddress ?? "anon@mail.com",
-  };
-
   const fetchChats = async (): Promise<Chats[]> => {
     const result = await GetAllChatsAsync();
     return result?.data ?? [];
@@ -45,7 +31,6 @@ const Dashboard = (props: Props) => {
     queryKey: ["chats"],
     queryFn: fetchChats,
   });
-  console.log("Dashboard refetch:", refetch);
 
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -61,9 +46,7 @@ const Dashboard = (props: Props) => {
         <ChatsCard chats={data} refetch={refetch} />
       </div>
       <div className="fixed bottom-10 right-3 sm:right-15 md:right-3 lg:right-5 xl:right-5 2xl:right-50 block z-10">
-        {hasPermission(userPermissions, "create:chats") && (
-          <CreateChat onSubmit={mutation.mutateAsync} />
-        )}
+        <CreateChat onSubmit={mutation.mutateAsync} />
       </div>
     </div>
   );

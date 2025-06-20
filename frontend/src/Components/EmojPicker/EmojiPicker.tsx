@@ -19,8 +19,6 @@ interface Props {
 const EmojiPicker = ({ emojis, onReactionSubmit, refetch }: Props) => {
   const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
 
-  console.log("EmojiPicker refetch:", refetch);
-
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger asChild>

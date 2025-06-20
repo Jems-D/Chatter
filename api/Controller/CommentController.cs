@@ -61,7 +61,7 @@ namespace api.Controller
             var result = await _repoComment.DeleteComment(commentId);
             if (result is null)
                 return BadRequest("Comment not deleted");
-            return Ok(result);
+            return NoContent();
         }
     }
 }
