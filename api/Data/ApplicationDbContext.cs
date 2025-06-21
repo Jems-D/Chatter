@@ -822,7 +822,7 @@ namespace api.Data
             return result;
         }
 
-        public async Task<APIResult<int?>> ChangeUserRoleAsync(Guid id, string newRole)
+        public async Task<APIResult<int?>> ChangeUserRoleAsync(Guid id, ChangeRoleDTO newRole)
         {
             var result = new APIResult<int?>
             {
@@ -838,7 +838,7 @@ namespace api.Data
                     command.CommandType = CommandType.StoredProcedure;
                     command.CommandText = StoredProcedureConstants.SP_ChangeUserRole.ToString();
                     command.Parameters.Add(new SqlParameter("@UserId", id));
-                    command.Parameters.Add(new SqlParameter("@NewRole", newRole));
+                    command.Parameters.Add(new SqlParameter("@NewRole", newRole.NewRole));
 
                     await Database.OpenConnectionAsync();
                     int rowsAffected = await command.ExecuteNonQueryAsync();

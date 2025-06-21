@@ -20,7 +20,7 @@ namespace api.Repository.AdminRepo
             _context = context;
         }
 
-        public async Task<int?> ChangeUserRole(Guid id, string newRole)
+        public async Task<int?> ChangeUserRole(Guid id, ChangeRoleDTO newRole)
         {
             var result = await _context.ChangeUserRoleAsync(id, newRole);
             if (!result.IsSuccess)

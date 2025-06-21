@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.DTO.Users;
 using api.Helpers;
 using api.Interface;
 using api.Model;
@@ -34,18 +35,17 @@ namespace api.Controller.AdminControllers
             return Ok(users);
         }
 
-        [HttpPatch("{id:string}")]
+        [HttpPatch("{id:guid}")]
         public async Task<IActionResult> ChangeUserRoleEndpoint(
-            [FromRoute] string id,
-            [FromBody] string newRole
+            [FromRoute] Guid id,
+            [FromBody] ChangeRoleDTO newRole
         )
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("User role not valid");
             }
-            var userId = Guid.Parse(id);
-            var updatedRole = await _repoAdminUser.ChangeUserRole(userId, newRole);
+            var updatedRole = await _repoAdminUser.ChangeUserRole(id, newRole);
             if (updatedRole is null)
             {
                 return BadRequest("User not updated");

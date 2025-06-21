@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "../ui/table";
 import type { User } from "../../Model/User";
-import { GetAllUsersAsync } from "../../Service/UserService";
+import { ChangeRoleAsync, GetAllUsersAsync } from "../../Service/UserService";
 import {
   useReactTable,
   getCoreRowModel,
@@ -24,44 +24,19 @@ import {
 import Filters from "../Filters/Filters";
 import { ArrowUpDown, Ghost } from "lucide-react";
 import { Button } from "../ui/button";
+import EditableCell from "../EditableCell/EditableCell";
+import { toast } from "react-toastify";
 
-type Props = {};
-
-const columns: ColumnDef<User, any>[] = [
-  {
-    accessorKey: "userId",
-    header: "Id",
-    cell: (props) => <p>{props.getValue()}</p>,
-  },
-  {
-    accessorKey: "username",
-    header: "Username",
-    cell: (props) => <p>{props.getValue()}</p>,
-  },
-  {
-    accessorKey: "userRole",
-    header: "Role",
-    cell: (props) => <p>{props.getValue()}</p>,
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Date Created",
-    cell: (props) => <p>{props.getValue()}</p>,
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Date Updated",
-    cell: (props) => <p>{props.getValue()}</p>,
-  },
-];
+interface Props {}
 
 const UserTable = (props: Props) => {
   const [tableData, setTableData] = useState<User[]>([]);
+  const [refresh, setRefresh] = useState<number>(0);
   const [columnFilters, setColumnFilters] = useState<ColumnFilter[]>([]);
 
   useEffect(() => {
     fetchTableData();
-  }, []);
+  }, [refresh]);
 
   const fetchTableData = async () => {
     const data = await GetAllUsersAsync();
@@ -69,6 +44,51 @@ const UserTable = (props: Props) => {
       setTableData(data.data);
     }
   };
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    ChangeRoleAsync(userId, newRole)
+      .then((res) => {
+        if (res?.status === 204) {
+          setRefresh((prev) => prev + 1);
+          toast.success("Role changed successfully");
+        }
+      })
+      .catch((err) => console.log(err.messge));
+  };
+
+  const columns: ColumnDef<User, any>[] = [
+    {
+      accessorKey: "username",
+      header: "Username",
+      cell: (props) => <p>{props.getValue()}</p>,
+    },
+    {
+      accessorKey: "userRole",
+      header: "Role",
+      cell: (props) => {
+        const row = props.row.original;
+        const currentRole = props.getValue();
+        return (
+          <EditableCell
+            initialValue={currentRole}
+            onRoleChange={async (newRole) =>
+              await handleRoleChange(row.userId, newRole)
+            }
+          />
+        );
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Date Created",
+      cell: (props) => <p>{props.getValue()}</p>,
+    },
+    {
+      accessorKey: "updatedAt",
+      header: "Date Updated",
+      cell: (props) => <p>{props.getValue()}</p>,
+    },
+  ];
 
   const table = useReactTable({
     data: tableData,
@@ -92,7 +112,7 @@ const UserTable = (props: Props) => {
         />
       </div>
       <Table>
-        <TableCaption>IDK</TableCaption>
+        <TableCaption>Users</TableCaption>
         <TableHeader>
           {table.getHeaderGroups().map((heaaderGroup) => (
             <TableRow key={heaaderGroup.id}>

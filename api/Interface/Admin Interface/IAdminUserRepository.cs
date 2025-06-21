@@ -10,6 +10,6 @@ namespace api.Interface
     public interface IAdminUserRepository
     {
         Task<List<UserDTO?>> GetAllUsers();
-        Task<int?> ChangeUserRole(Guid id, string newRole);
+        Task<int?> ChangeUserRole(Guid id, ChangeRoleDTO newRole);
     }
 }
