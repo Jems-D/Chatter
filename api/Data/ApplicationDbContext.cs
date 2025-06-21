@@ -8,6 +8,7 @@ using api.Constants;
 using api.DTO.Chats;
 using api.DTO.SPs;
 using api.DTO.Users;
+using api.Helpers;
 using api.Model;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.SqlClient;
@@ -764,6 +765,93 @@ namespace api.Data
                 result.Message = ex.Message;
                 result.IsSuccess = false;
             }
+            return result;
+        }
+
+        #endregion
+
+
+        #region Admin-Users
+
+        public async Task<APIResult<List<User?>>> GetAllUsersAsync()
+        {
+            var result = new APIResult<List<User?>>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_GetAllUsers.ToString();
+                    var users = new List<User?>();
+                    await Database.OpenConnectionAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var user = new User
+                                {
+                                    Id = reader.GetGuid(reader.GetOrdinal("user_id")),
+                                    UserName = reader.GetString(reader.GetOrdinal("user_name")),
+                                    Role = reader.GetString(reader.GetOrdinal("user_role")),
+                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("created_at")),
+                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("updated_at")),
+                                };
+
+                                users.Add(user);
+                            }
+
+                            result.Payload = users;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+            return result;
+        }
+
+        public async Task<APIResult<int?>> ChangeUserRoleAsync(Guid id, string newRole)
+        {
+            var result = new APIResult<int?>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_ChangeUserRole.ToString();
+                    command.Parameters.Add(new SqlParameter("@UserId", id));
+                    command.Parameters.Add(new SqlParameter("@NewRole", newRole));
+
+                    await Database.OpenConnectionAsync();
+                    int rowsAffected = await command.ExecuteNonQueryAsync();
+                    result.Payload = rowsAffected;
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+
             return result;
         }
 

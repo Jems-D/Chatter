@@ -17,3 +17,11 @@ export interface UserContextType {
   logoutUser: () => void;
   isAuthenticated: () => boolean;
 }
+
+export interface User {
+  userId: string;
+  username: string;
+  userRole: string;
+  createdAt: string;
+  updatedAt: string;
+}

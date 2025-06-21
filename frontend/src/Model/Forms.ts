@@ -13,3 +13,10 @@ export interface ChatForm {
   chatTitle: string;
   chatContent: string;
 }
+
+export interface UserQuery {
+  username: string;
+  emailAddress: string;
+  PageNumber: number;
+  PageSize: number;
+}

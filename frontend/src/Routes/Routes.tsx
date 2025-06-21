@@ -10,6 +10,7 @@ import ProtectedRoutes from "../Routes/ProtectedRoutes";
 import UnauthorizePage from "../Pages/ErrorPage/UnauthorizePage";
 import Forbidden from "../Pages/ErrorPage/Forbidden";
 import { ToastContainer } from "react-toastify";
+import AdminDashboard from "../Pages/AdminPages/AdminDashboard";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Dashboard />,
+      },
+      {
+        path: "/admin/dashboard",
+        element: <AdminDashboard />, //to do add protective route
       },
     ],
   },

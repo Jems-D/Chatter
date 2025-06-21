@@ -6,6 +6,7 @@ using api.Data;
 using api.Interface;
 using api.Model;
 using api.Repository;
+using api.Repository.AdminRepo;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -131,6 +132,7 @@ builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IEmojiRepository, EmojiRepository>();
 builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IAdminUserRepository, AdminUserRepository>();
 
 var app = builder.Build();
 

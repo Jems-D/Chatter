@@ -15,5 +15,7 @@ namespace api.Constants
         SP_DeleteComment,
         SP_DeleteChat,
         SP_DeleteReaction,
+        SP_GetAllUsers,
+        SP_ChangeUserRole,
     }
 }

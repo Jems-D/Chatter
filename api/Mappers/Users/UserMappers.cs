@@ -46,5 +46,17 @@ namespace api.Mappers.Users
                 EmailAddress = dto.EmailAddress,
             };
         }
+
+        public static UserDTO ToUserDTOFromUser(this User user)
+        {
+            return new UserDTO
+            {
+                UserId = user.Id,
+                Username = user.UserName,
+                UserRole = user.Role,
+                CreatedAt = (DateTime)user.CreatedAt!,
+                UpdatedAt = (DateTime)user.UpdatedAt!,
+            };
+        }
     }
 }
