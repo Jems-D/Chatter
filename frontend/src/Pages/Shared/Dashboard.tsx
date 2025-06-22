@@ -1,23 +1,11 @@
 import { CreateChatAsync, GetAllChatsAsync } from "../../Service/ChatService";
 import ChatsCard from "../../Components/Chat/ChatsCard";
 import type { Chats } from "../../Model/Chats";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  type UseQueryResult,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CreateChat from "../../Components/FormChat/CreateChat";
-import { ToastContainer } from "react-toastify";
 import type { ChatForm } from "../../Model/Forms";
-import { useAuth } from "../../Context/useAuth";
-import { hasPermission, type Role } from "../../Helpers/RoleBasedAccessControl";
-import type { SyntheticEvent } from "react";
-import { AddReactionAsync } from "../../Service/ReactionService";
 
-type Props = {};
-
-const Dashboard = (props: Props) => {
+const Dashboard = () => {
   const fetchChats = async (): Promise<Chats[]> => {
     const result = await GetAllChatsAsync();
     return result?.data ?? [];
@@ -27,7 +15,7 @@ const Dashboard = (props: Props) => {
     return await CreateChatAsync(form.chatTitle, form.chatContent);
   };
 
-  const { data, status, isLoading, refetch } = useQuery<Chats[]>({
+  const { data, refetch } = useQuery<Chats[]>({
     queryKey: ["chats"],
     queryFn: fetchChats,
   });

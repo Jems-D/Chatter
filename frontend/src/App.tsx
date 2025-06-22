@@ -1,6 +1,6 @@
 import "./App.css";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { useAuth, UserProvider } from "./Context/useAuth";
+import { useAuth } from "./Context/useAuth";
 import { Bounce, ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { hasPermission, type Role } from "./Helpers/RoleBasedAccessControl";

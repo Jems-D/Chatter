@@ -1,4 +1,4 @@
-import React, { type SyntheticEvent } from "react";
+import { type SyntheticEvent } from "react";
 import type { Emoji } from "../../Model/Emoji";
 import { useAuth } from "../../Context/useAuth";
 import type { QueryObserverResult } from "@tanstack/react-query";

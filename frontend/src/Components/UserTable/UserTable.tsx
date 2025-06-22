@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -15,22 +15,19 @@ import {
   getCoreRowModel,
   type ColumnDef,
   flexRender,
-  type ColumnFiltersState,
   type ColumnFilter,
   getFilteredRowModel,
   getSortedRowModel,
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import Filters from "../Filters/Filters";
-import { ArrowUpDown, Ghost } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Button } from "../ui/button";
 import EditableCell from "../EditableCell/EditableCell";
 import { toast } from "react-toastify";
 import { FormatDate } from "../../Helpers/DateFormatter";
 
-interface Props {}
-
-const UserTable = (props: Props) => {
+const UserTable = () => {
   const [tableData, setTableData] = useState<User[]>([]);
   const [refresh, setRefresh] = useState<number>(0);
   const [columnFilters, setColumnFilters] = useState<ColumnFilter[]>([]);

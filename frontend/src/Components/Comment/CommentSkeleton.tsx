@@ -1,11 +1,7 @@
-import React from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Skeleton } from "../ui/skeleton";
 
-type Props = {};
-
-const CommentSkeleton = (props: Props) => {
+const CommentSkeleton = () => {
   return (
     <Card className="shadow-none border-0 rounded-0 gap-1 py-3 bg-white dark:bg-[var(--color_appledark)] text-[var(--color_text_white_i) dark:text=[var(--color_text_dark_i)] ">
       <CardHeader className="">

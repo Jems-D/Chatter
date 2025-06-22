@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import * as Yup from "yup";
-import { ChartColumn, Pen } from "lucide-react";
+import { Pen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { ChatForm } from "../../Model/Forms";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -18,9 +18,7 @@ import { Button } from "../ui/button";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import type { Chats } from "../../Model/Chats";
-import { CreateChatAsync } from "../../Service/ChatService";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useAuth } from "../../Context/useAuth";
 import { Navigate } from "react-router-dom";
 const validations = Yup.object({

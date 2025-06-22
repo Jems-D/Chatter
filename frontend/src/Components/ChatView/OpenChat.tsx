@@ -6,10 +6,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@radix-ui/react-dialog";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { MessageCircle, X } from "lucide-react";
-import { DialogFooter, DialogHeader } from "../ui/dialog";
+import { DialogHeader } from "../ui/dialog";
 import * as Yup from "yup";
 import ChatItem from "../Chat/ChatItem";
 import { useQuery, type QueryObserverResult } from "@tanstack/react-query";
@@ -17,7 +17,6 @@ import type { Chats } from "../../Model/Chats";
 import CommentCard from "../Comment/CommentCard";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Input } from "../ui/input";
 import {
   CreateCommentAsync,
   GetAllCommentsAsync,
@@ -49,7 +48,7 @@ const OpenChat = ({ chat }: Props) => {
     return result?.data ?? [];
   };
 
-  const { data, status, isLoading, refetch } = useQuery<Comments[]>({
+  const { data, refetch } = useQuery<Comments[]>({
     queryKey: ["comments"],
     queryFn: fecthComments,
     enabled: isChatOpen,

@@ -97,7 +97,7 @@ export const UserProvider = ({ children }: Props) => {
           }
         }
       })
-      .catch((error) => console.log("Something's wrong"));
+      .catch((error) => console.log("Something's wrong", error));
   };
 
   const isAuthenticated = () => {

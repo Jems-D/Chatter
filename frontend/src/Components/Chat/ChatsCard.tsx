@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, type SyntheticEvent } from "react";
+import { lazy, Suspense } from "react";
 import type { Chats } from "../../Model/Chats";
 import ChatSkeleton from "./ChatSkeleton";
 import type { QueryObserverResult } from "@tanstack/react-query";

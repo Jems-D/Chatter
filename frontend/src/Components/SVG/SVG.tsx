@@ -1,6 +1,4 @@
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-import React from "react";
-
 interface Props {
   vectorWhite: string;
   vectorDark: string;

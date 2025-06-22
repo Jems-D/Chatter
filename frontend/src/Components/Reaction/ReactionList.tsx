@@ -1,4 +1,4 @@
-import React, { type SyntheticEvent } from "react";
+import { type SyntheticEvent } from "react";
 import type { Reactions } from "../../Model/Reaction";
 import ReactionItem from "./ReactionItem";
 import type { QueryObserverResult } from "@tanstack/react-query";

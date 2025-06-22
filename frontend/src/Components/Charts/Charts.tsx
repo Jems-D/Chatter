@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useStatusHub, { type Stats } from "../../Ref/useStatusHub";
 import { GetStatsAsync } from "../../Service/StatsService";
-import TotalUser from "../Stats/TotalCount";
 import UserSegragationChart from "../Stats/UserSegragationChart";
 import TotalCount from "../Stats/TotalCount";
 

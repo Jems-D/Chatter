@@ -1,20 +1,18 @@
-import React, { useEffect, useState, type SyntheticEvent } from "react";
+import { useEffect, useState } from "react";
 import type { Chats } from "../../Model/Chats";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import type { Emoji } from "../../Model/Emoji";
 import { GetAllEmojisAsync } from "../../Service/EmojiService";
 import EmojiPicker from "../EmojPicker/EmojiPicker";
-import { Button } from "../ui/button";
 import {
   AddReactionAsync,
   RemoveReactionAsync,
 } from "../../Service/ReactionService";
-import { Bounce, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import ReactionList from "../Reaction/ReactionList";
 import type { QueryObserverResult } from "@tanstack/react-query";
 import OpenChat from "../ChatView/OpenChat";
-import { Ellipsis } from "lucide-react";
 import ChatMenu from "../ChatMenu/ChatMenu";
 import { DeleteChatAsync } from "../../Service/ChatService";
 import { useAuth } from "../../Context/useAuth";

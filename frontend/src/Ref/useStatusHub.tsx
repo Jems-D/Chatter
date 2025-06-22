@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 
 export interface Stats {
@@ -29,7 +29,7 @@ const useStatusHub = (): Stats | null => {
       .then(() => {
         console.log("SignalR connected");
       })
-      .catch((e) => console.log("not connected"));
+      .catch((e) => console.log("not connected", e));
 
     conn.on("RecievedStats", (data: Stats) => {
       setStats(data);

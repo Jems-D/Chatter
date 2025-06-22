@@ -1,11 +1,9 @@
-import React from "react";
 import SVG from "../../Components/SVG/SVG";
 import white from "../../assets/401 Error Unauthorized  white.svg";
 import dark from "../../assets/401 Error Unauthorized dark.svg";
 import { Link, Navigate, useLocation } from "react-router-dom";
-type Props = {};
 
-const UnauthorizePage = (props: Props) => {
+const UnauthorizePage = () => {
   const location = useLocation();
   if (!location.state?.fromProtectedRoute) {
     return <Navigate to="/" replace />; //usesr will not be able to enter status pages manually
