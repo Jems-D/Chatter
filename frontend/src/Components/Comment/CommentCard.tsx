@@ -14,6 +14,10 @@ const CommentCard = ({ comments, refetch }: Props) => {
     return <span className="font-semibold">No Comments</span>;
   }
 
+  if (!Array.isArray(comments)) {
+    return <span className="font-semibold">No Comments</span>;
+  }
+
   return (
     <div>
       {comments.length ? (
