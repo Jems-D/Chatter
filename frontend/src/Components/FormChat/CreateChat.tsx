@@ -74,10 +74,7 @@ const CreateChat = ({ onSubmit }: Props) => {
         <form onSubmit={handleSubmit(onChatCreated)}>
           <DialogHeader>
             <DialogTitle>Add chatter</DialogTitle>
-            <DialogDescription>
-              Add title and content and say whatever you want, some will listen,
-              some will don't.
-            </DialogDescription>
+            <DialogDescription>Say something</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">

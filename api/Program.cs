@@ -7,6 +7,8 @@ using api.Interface;
 using api.Model;
 using api.Repository;
 using api.Repository.AdminRepo;
+using api.Service;
+using api.SignalRHub;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,6 +29,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 //Connection String
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -126,14 +129,14 @@ builder.Services.AddRateLimiter(options =>
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
-//Interfaces
+//Interfaces and services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IEmojiRepository, EmojiRepository>();
 builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IAdminUserRepository, AdminUserRepository>();
-
+builder.Services.AddScoped<StatsService>();
 var app = builder.Build();
 
 //for versioning
@@ -166,5 +169,6 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<StatsHub>("/statsHub");
 app.MapControllers();
 app.Run();

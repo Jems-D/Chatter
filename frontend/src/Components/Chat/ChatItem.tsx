@@ -120,23 +120,22 @@ function ChatItem({ chat, refetch, isOpen = false }: Props) {
         {chat.chatContent}
       </CardContent>
       <CardFooter className="flex-col">
-        {!isOpen && (
-          <div className="flex w-full justify-end">
-            <Button
-              variant="ghost"
-              className="dark:hover:!bg-[var(--color_appledark)] hover:!bg-[var(--color_applewhite)] hover:!text-blue-500"
-            >
-              <EmojiPicker
-                emojis={emoji}
-                onReactionSubmit={onReactionSubmit}
-                refetch={refetch}
-              />
-            </Button>
-            <div className="">
-              <OpenChat chat={chat} />
+        {hasPermission(userPermissions, "add:reactions") &&
+          hasPermission(userPermissions, "create:comments") &&
+          !isOpen && (
+            <div className="flex w-full justify-end">
+              <div>
+                <EmojiPicker
+                  emojis={emoji}
+                  onReactionSubmit={onReactionSubmit}
+                  refetch={refetch}
+                />
+              </div>
+              <div className="">
+                <OpenChat chat={chat} />
+              </div>
             </div>
-          </div>
-        )}
+          )}
         <div className="flex w-full !justify-start">
           <ReactionList
             reactions={chat.reactions}

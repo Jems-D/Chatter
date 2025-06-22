@@ -12,6 +12,8 @@
   "dependencies": {
     "@fontsource/poppins": "^5.2.6",
     "@hookform/resolvers": "^5.0.1",
+    "@microsoft/signalr": "^8.0.7",
+    "@nivo/bar": "^0.99.0",
     "@radix-ui/react-aspect-ratio": "^1.1.7",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.14",

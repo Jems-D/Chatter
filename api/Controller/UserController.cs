@@ -7,6 +7,7 @@ using api.DTO.Users;
 using api.Interface;
 using api.Mappers.Users;
 using api.Model.Entites;
+using api.Service;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -22,10 +23,12 @@ namespace api.Controller
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _repoUser;
+        private readonly StatsService _statsService;
 
-        public UserController(IUserRepository repoUser)
+        public UserController(IUserRepository repoUser, StatsService statsService)
         {
             _repoUser = repoUser;
+            _statsService = statsService;
         }
 
         [HttpPost]
@@ -44,6 +47,7 @@ namespace api.Controller
             {
                 return Conflict("Username or email already exists");
             }
+            await _statsService.BroadCastAsync();
             return Created();
         }
 

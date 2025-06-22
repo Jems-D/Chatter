@@ -15,7 +15,11 @@ import AdminDashboard from "../Pages/AdminPages/AdminDashboard";
 export const router = createBrowserRouter([
   {
     path: "",
-    element: <App />,
+    element: (
+      <UserProvider>
+        <App />
+      </UserProvider>
+    ),
     children: [
       {
         path: "/",
@@ -23,7 +27,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/admin/dashboard",
-        element: <AdminDashboard />, //to do add protective route
+        element: (
+          <ProtectedRoutes allowedRoles={["Admin"]}>
+            <AdminDashboard />
+          </ProtectedRoutes>
+        ), //to do add protective route
       },
     ],
   },

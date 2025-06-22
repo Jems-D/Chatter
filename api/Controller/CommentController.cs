@@ -7,6 +7,7 @@ using api.Extensions;
 using api.Interface;
 using api.Mappers.Comments;
 using api.Model;
+using api.Service;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +23,12 @@ namespace api.Controller
     public class CommentController : ControllerBase
     {
         private readonly ICommentRepository _repoComment;
+        private readonly StatsService _statsService;
 
-        public CommentController(ICommentRepository repoComment)
+        public CommentController(ICommentRepository repoComment, StatsService statsService)
         {
             _repoComment = repoComment;
+            _statsService = statsService;
         }
 
         [HttpGet]
@@ -50,7 +53,7 @@ namespace api.Controller
             var createdCommentId = await _repoComment.CreateComment(comment);
             if (createdCommentId is null)
                 return BadRequest("Comment not created");
-
+            await _statsService.BroadCastAsync();
             return Ok(createdCommentId);
         }
 
@@ -61,6 +64,7 @@ namespace api.Controller
             var result = await _repoComment.DeleteComment(commentId);
             if (result is null)
                 return BadRequest("Comment not deleted");
+            await _statsService.BroadCastAsync();
             return NoContent();
         }
     }

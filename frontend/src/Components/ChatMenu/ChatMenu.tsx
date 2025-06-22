@@ -32,7 +32,6 @@ const ChatMenu = ({ onDelete, userId }: Props) => {
     emailAddress: user?.emailAddress ?? "anon@mail.com",
   };
 
-  console.log("userids", user?.id, userId);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

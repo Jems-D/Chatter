@@ -11,8 +11,6 @@ interface Props {
 const ChatItem = lazy(() => import("../Chat/ChatItem"));
 
 const ChatsCard = ({ chats, refetch }: Props) => {
-  console.log("Chats: ", chats);
-
   if (typeof chats === "undefined") {
     return <h3>No chats fetched</h3>;
   }

@@ -17,5 +17,7 @@ namespace api.Constants
         SP_DeleteReaction,
         SP_GetAllUsers,
         SP_ChangeUserRole,
+        SP_UserStats,
+        SP_ChatterStats,
     }
 }

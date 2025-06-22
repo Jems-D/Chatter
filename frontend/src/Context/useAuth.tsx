@@ -1,10 +1,10 @@
+import { injectAuthHandlers } from "../Interceptor/axiosSetup";
 import type { UserContextType, UserResponse } from "../Model/User";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   LoginAccountAsync,
   LogoutUserAsync,
-  RecreateRefreshTokenAsync,
   RegisterAccountAsync,
 } from "../Service/AuthService";
 import React from "react";
@@ -93,21 +93,11 @@ export const UserProvider = ({ children }: Props) => {
               closeButton: true,
             });
             navigate("/");
+            window.location.reload();
           }
         }
       })
       .catch((error) => console.log("Something's wrong"));
-  };
-
-  const refreshToken = async (id: string) => {
-    await RecreateRefreshTokenAsync(id)
-      .then((res) => {
-        if (res) {
-          if (res.status === 200) {
-          }
-        }
-      })
-      .then((e) => console.log(e));
   };
 
   const isAuthenticated = () => {
@@ -132,18 +122,21 @@ export const UserProvider = ({ children }: Props) => {
             transition: Bounce,
             closeButton: true,
           });
-          navigate("/sign-in");
+          navigate("/");
         }
       }
     });
   };
+
+  useEffect(() => {
+    injectAuthHandlers(() => user?.id ?? null, logoutUser);
+  }, [user, logoutUser]);
 
   return (
     <UserContext.Provider
       value={{
         loginUser,
         user,
-        refreshToken,
         isAuthenticated,
         registerUser,
         logoutUser,

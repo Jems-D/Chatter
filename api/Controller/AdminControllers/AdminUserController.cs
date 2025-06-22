@@ -6,6 +6,7 @@ using api.DTO.Users;
 using api.Helpers;
 using api.Interface;
 using api.Model;
+using api.Service;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +17,16 @@ namespace api.Controller.AdminControllers
     [ApiVersion("1.0")]
     [ApiController]
     [Route("v{version:apiVersion}/admin/users")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdminUserController : ControllerBase
     {
         private readonly IAdminUserRepository _repoAdminUser;
+        private readonly StatsService _statsService;
 
-        public AdminUserController(IAdminUserRepository repoAdminUser)
+        public AdminUserController(IAdminUserRepository repoAdminUser, StatsService statsService)
         {
             _repoAdminUser = repoAdminUser;
+            _statsService = statsService;
         }
 
         [HttpGet]
@@ -50,6 +53,8 @@ namespace api.Controller.AdminControllers
             {
                 return BadRequest("User not updated");
             }
+
+            await _statsService.BroadCastAsync();
             return NoContent();
         }
     }

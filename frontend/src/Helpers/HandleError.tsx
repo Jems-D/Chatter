@@ -60,18 +60,6 @@ export const handleError = (error: Error) => {
         transition: Bounce,
         closeButton: true,
       });
-    } else if (err?.status === 401) {
-      toast.error("Session expired", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: isDarkMode ? "dark" : "colored",
-        transition: Bounce,
-        closeButton: true,
-      });
     } else if (err) {
       toast.error(err?.data, {
         position: "top-right",

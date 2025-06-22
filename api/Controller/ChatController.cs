@@ -7,6 +7,7 @@ using api.Extensions;
 using api.Interface;
 using api.Mappers.Chats;
 using api.Repository;
+using api.Service;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -24,10 +25,12 @@ namespace api.Controller
     public class ChatController : ControllerBase
     {
         private readonly IChatRepository _repoChat;
+        private readonly StatsService _statusService;
 
-        public ChatController(IChatRepository repoChat)
+        public ChatController(IChatRepository repoChat, StatsService statusService)
         {
             _repoChat = repoChat;
+            _statusService = statusService;
         }
 
         [HttpGet]
@@ -72,6 +75,7 @@ namespace api.Controller
             {
                 return StatusCode(500, "Something went wrong");
             }
+            await _statusService.BroadCastAsync();
             return Ok(insertedChat);
         }
 
@@ -83,6 +87,7 @@ namespace api.Controller
             var results = await _repoChat.DeletChat(chatId);
             if (results is null)
                 return BadRequest("Chat not deleted");
+            await _statusService.BroadCastAsync();
             return NoContent();
         }
     }

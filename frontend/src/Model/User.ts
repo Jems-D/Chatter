@@ -13,7 +13,6 @@ export interface UserContextType {
     password: string
   ) => void;
   loginUser: (emailAddress: string, password: string) => void;
-  refreshToken: (id: string) => void;
   logoutUser: () => void;
   isAuthenticated: () => boolean;
 }

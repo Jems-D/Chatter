@@ -6,6 +6,7 @@ using api.DTO.Reactions;
 using api.Extensions;
 using api.Interface;
 using api.Mappers.Emojis;
+using api.Service;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -22,10 +23,12 @@ namespace api.Controller
     public class ReactionController : ControllerBase
     {
         private readonly IReactionRepository _repoReaction;
+        private readonly StatsService _statsService;
 
-        public ReactionController(IReactionRepository repoRepository)
+        public ReactionController(IReactionRepository repoRepository, StatsService statsService)
         {
             _repoReaction = repoRepository;
+            _statsService = statsService;
         }
 
         [HttpPost]
@@ -38,6 +41,7 @@ namespace api.Controller
             var reaction = await _repoReaction.InsertReaction(createReact);
             if (reaction == null)
                 return BadRequest("Reaction not added");
+            await _statsService.BroadCastAsync();
             return Created();
         }
 
@@ -48,6 +52,7 @@ namespace api.Controller
             var results = await _repoReaction.DeleteReaction(reactionId);
             if (results is null)
                 return BadRequest("Reaction not removed");
+            await _statsService.BroadCastAsync();
             return NoContent();
         }
     }

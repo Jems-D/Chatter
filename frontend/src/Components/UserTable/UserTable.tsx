@@ -26,6 +26,7 @@ import { ArrowUpDown, Ghost } from "lucide-react";
 import { Button } from "../ui/button";
 import EditableCell from "../EditableCell/EditableCell";
 import { toast } from "react-toastify";
+import { FormatDate } from "../../Helpers/DateFormatter";
 
 interface Props {}
 
@@ -81,12 +82,12 @@ const UserTable = (props: Props) => {
     {
       accessorKey: "createdAt",
       header: "Date Created",
-      cell: (props) => <p>{props.getValue()}</p>,
+      cell: (props) => <p>{FormatDate(props.getValue())}</p>,
     },
     {
       accessorKey: "updatedAt",
       header: "Date Updated",
-      cell: (props) => <p>{props.getValue()}</p>,
+      cell: (props) => <p>{FormatDate(props.getValue())}</p>,
     },
   ];
 

@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using System.Xml.XPath;
 using api.Constants;
 using api.DTO.Chats;
+using api.DTO.ChatterStats;
 using api.DTO.SPs;
 using api.DTO.Users;
 using api.Helpers;
 using api.Model;
+using api.SignalRHub;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -852,6 +854,104 @@ namespace api.Data
                 result.IsSuccess = false;
             }
 
+            return result;
+        }
+
+        public async Task<APIResult<UserStatsDTO?>> GetUserStatsAsync()
+        {
+            var result = new APIResult<UserStatsDTO?>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_UserStats.ToString();
+
+                    await Database.OpenConnectionAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                var stats = new UserStatsDTO
+                                {
+                                    TotalCount = reader.GetInt32(reader.GetOrdinal("total_users")),
+                                    UserCount = reader.GetInt32(reader.GetOrdinal("user_count")),
+                                    AdminCount = reader.GetInt32(reader.GetOrdinal("admin_count")),
+                                    ModCount = reader.GetInt32(reader.GetOrdinal("mod_count")),
+                                };
+
+                                result.Payload = stats;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region Admin-Shared
+        public async Task<APIResult<ChatterStatsDTO?>> GetChatterStatsAsync()
+        {
+            var result = new APIResult<ChatterStatsDTO?>
+            {
+                StatusCode = 200,
+                Message = "Success",
+                IsSuccess = true,
+            };
+
+            try
+            {
+                using (var command = Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = StoredProcedureConstants.SP_ChatterStats.ToString();
+
+                    await Database.OpenConnectionAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                var stats = new ChatterStatsDTO
+                                {
+                                    ChatCount = reader.GetInt32(reader.GetOrdinal("chat_count")),
+                                    CommentCount = reader.GetInt32(
+                                        reader.GetOrdinal("comment_count")
+                                    ),
+                                    ReactionCount = reader.GetInt32(
+                                        reader.GetOrdinal("reaction_count")
+                                    ),
+                                };
+                                result.Payload = stats;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                result.StatusCode = 500;
+                result.Message = ex.Message;
+                result.IsSuccess = false;
+            }
             return result;
         }
 

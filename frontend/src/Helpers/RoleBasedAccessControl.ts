@@ -14,6 +14,7 @@ const ROLES = {
     "create:comments",
     "update:comments",
     "delete:comments",
+    "view:users",
   ],
   Moderator: [
     "view:chats",

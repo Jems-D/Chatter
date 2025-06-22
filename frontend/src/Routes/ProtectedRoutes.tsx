@@ -23,7 +23,9 @@ const ProtectedRoutes = ({ children, allowedRoles }: Props) => {
   }
 
   if (!user || !allowedRoles.includes(userRole!)) {
-    return <Navigate to="/" replace state={{ fromProtectedRoute: true }} />; // will be used so that users cannot manually enter the status pages
+    return (
+      <Navigate to="/forbidden" replace state={{ fromProtectedRoute: true }} />
+    ); // will be used so that users cannot manually enter the status pages
   }
 
   return children;
